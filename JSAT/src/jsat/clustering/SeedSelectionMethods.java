@@ -1,4 +1,3 @@
-
 package jsat.clustering;
 
 import java.util.*;
@@ -82,8 +81,6 @@ public class SeedSelectionMethods {
          */
         MEAN_QUANTILES
     }
-
-    ;
 
     /**
      * Selects seeds from a data set to use for a clustering algorithm. Copies of the vectors chosen will be returned.
@@ -217,37 +214,36 @@ public class SeedSelectionMethods {
 
         int k = indices.length;
 
-        if (null != selectionMethod)
-            switch (selectionMethod) {
-                case RANDOM:
-                    Set<Integer> indecies = new IntSet(k);
-                    while (indecies.size() != k)//Keep sampling, we cant use the same point twice.
-                        indecies.add(rand.nextInt(d.size()));//TODO create method to do uniform sampleling for a select range
-                    int j = 0;
-                    for (Integer i : indecies)
-                        indices[j++] = i;
-                    break;
-                case KPP_TIA:
-                    kppSelectionTIA(indices, rand, d, k, dm, accelCache, parallel);
-                    break;
-                case KPP:
-                    kppSelection(indices, rand, d, k, dm, accelCache, parallel);
-                    break;
-                case KBB_TIA:
-                    kbbSelectionTIA(indices, rand, d, k, dm, accelCache, parallel);
-                    break;
-                case KBB:
-                    kbbSelection(indices, rand, d, k, dm, accelCache, parallel);
-                    break;
-                case FARTHEST_FIRST:
-                    ffSelection(indices, rand, d, k, dm, accelCache, parallel);
-                    break;
-                case MEAN_QUANTILES:
-                    mqSelection(indices, d, k, dm, accelCache, parallel);
-                    break;
-                default:
-                    break;
-            }
+        if (null != selectionMethod) switch (selectionMethod) {
+            case RANDOM:
+                Set<Integer> indecies = new IntSet(k);
+                while (indecies.size() != k)//Keep sampling, we cant use the same point twice.
+                    indecies.add(rand.nextInt(d.size()));//TODO create method to do uniform sampleling for a select range
+                int j = 0;
+                for (Integer i : indecies)
+                    indices[j++] = i;
+                break;
+            case KPP_TIA:
+                kppSelectionTIA(indices, rand, d, k, dm, accelCache, parallel);
+                break;
+            case KPP:
+                kppSelection(indices, rand, d, k, dm, accelCache, parallel);
+                break;
+            case KBB_TIA:
+                kbbSelectionTIA(indices, rand, d, k, dm, accelCache, parallel);
+                break;
+            case KBB:
+                kbbSelection(indices, rand, d, k, dm, accelCache, parallel);
+                break;
+            case FARTHEST_FIRST:
+                ffSelection(indices, rand, d, k, dm, accelCache, parallel);
+                break;
+            case MEAN_QUANTILES:
+                mqSelection(indices, d, k, dm, accelCache, parallel);
+                break;
+            default:
+                break;
+        }
 
     }
 
@@ -274,29 +270,25 @@ public class SeedSelectionMethods {
             //Compute the distance from each data point to the closest mean
             final int newMeanIndx = indices[j - 1];//Only the most recently added mean needs to get distances computed. 
 
-            double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) ->
-                    {
-                        double partial_sqrd_dist = 0.0;
-                        for (int i = start; i < end; i++) {
-                            double newDist = dm.dist(newMeanIndx, i, X, accelCache);
+            double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) -> {
+                double partial_sqrd_dist = 0.0;
+                for (int i = start; i < end; i++) {
+                    double newDist = dm.dist(newMeanIndx, i, X, accelCache);
 
-                            newDist *= newDist;
-                            if (newDist < closestDist[i])
-                                closestDist[i] = newDist;
-                            partial_sqrd_dist += closestDist[i] * w.get(i);
-                        }
+                    newDist *= newDist;
+                    if (newDist < closestDist[i]) closestDist[i] = newDist;
+                    partial_sqrd_dist += closestDist[i] * w.get(i);
+                }
 
-                        return partial_sqrd_dist;
-                    },
-                    (t, u) -> t + u);
+                return partial_sqrd_dist;
+            }, (t, u) -> t + u);
 
             if (sqrdDistSum <= 1e-6)//everyone is too close, randomly fill rest
             {
                 Set<Integer> ind = new IntSet();
                 for (int i = 0; i < j; i++)
                     ind.add(indices[i]);
-                while (ind.size() < k)
-                    ind.add(rand.nextInt(closestDist.length));
+                while (ind.size() < k) ind.add(rand.nextInt(closestDist.length));
                 int pos = 0;
                 for (int i : ind)
                     indices[pos++] = i;
@@ -307,8 +299,7 @@ public class SeedSelectionMethods {
             double rndX = rand.nextDouble() * sqrdDistSum;
             double searchSum = closestDist[0] * w.get(0);
             int i = 0;
-            while (searchSum < rndX && i < d.size() - 1)
-                searchSum += closestDist[++i] * w.get(i);
+            while (searchSum < rndX && i < d.size() - 1) searchSum += closestDist[++i] * w.get(i);
 
             indices[j] = i;
         }
@@ -333,8 +324,7 @@ public class SeedSelectionMethods {
         for (int i = 0; i < d.size(); i++) {
             double p = rand.nextDouble();
             expo_sample[i] = -Math.log(1 - p) / w.get(i);//dont use FastMath b/c we need to make sure all values are strictly positive
-            if (expo_sample[i] < expo_sample[indices[0]])
-                indices[0] = i;
+            if (expo_sample[i] < expo_sample[indices[0]]) indices[0] = i;
         }
 
 
@@ -360,35 +350,33 @@ public class SeedSelectionMethods {
             //Compute the distance from each data point to the closest mean
             final int newMeanIndx = indices[j - 1];//Only the most recently added mean needs to get distances computed. 
 
-            double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) ->
-                    {
-                        double partial_sqrd_dist = 0.0;
-                        for (int i = start; i < end; i++) {
-                            //mul by 4 b/c gamma and closestDist are the _squared_ distances, not raw.
-                            if (gamma[closest_mean[i]] < 4 * closestDist[i]) {
-                                double newDist = dm.dist(newMeanIndx, i, X, accelCache);
+            double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) -> {
+                double partial_sqrd_dist = 0.0;
+                for (int i = start; i < end; i++) {
+                    //mul by 4 b/c gamma and closestDist are the _squared_ distances, not raw.
+                    if (gamma[closest_mean[i]] < 4 * closestDist[i]) {
+                        double newDist = dm.dist(newMeanIndx, i, X, accelCache);
 
-                                newDist *= newDist;
-                                if (newDist < closestDist[i]) {
+                        newDist *= newDist;
+                        if (newDist < closestDist[i]) {
 
-                                    if (jj > 1) {
-                                        partial_sqrd_dist -= closestDist[i] * w.get(i);
-                                        dirty[i] = true;
-                                    } else {
-                                        sample_weight[i] = expo_sample[i] / (newDist);
-                                        nextSample.add(i);
-                                    }
-                                    closest_mean[i] = jj - 1;
-                                    closestDist[i] = newDist;
-                                    partial_sqrd_dist += closestDist[i] * w.get(i);
-
-                                }
+                            if (jj > 1) {
+                                partial_sqrd_dist -= closestDist[i] * w.get(i);
+                                dirty[i] = true;
+                            } else {
+                                sample_weight[i] = expo_sample[i] / (newDist);
+                                nextSample.add(i);
                             }
-                        }
+                            closest_mean[i] = jj - 1;
+                            closestDist[i] = newDist;
+                            partial_sqrd_dist += closestDist[i] * w.get(i);
 
-                        return partial_sqrd_dist;
-                    },
-                    (t, u) -> t + u);
+                        }
+                    }
+                }
+
+                return partial_sqrd_dist;
+            }, (t, u) -> t + u);
 
             if (prev_partial != 0) {
                 sqrdDistSum = prev_partial + sqrdDistSum;
@@ -401,8 +389,7 @@ public class SeedSelectionMethods {
                 Set<Integer> ind = new IntSet();
                 for (int i = 0; i < j; i++)
                     ind.add(indices[i]);
-                while (ind.size() < k)
-                    ind.add(rand.nextInt(closestDist.length));
+                while (ind.size() < k) ind.add(rand.nextInt(closestDist.length));
                 int pos = 0;
                 for (int i : ind)
                     indices[pos++] = i;
@@ -412,8 +399,7 @@ public class SeedSelectionMethods {
             int tries = 0;//for debugging
 
             //Search till we find first clean item
-            while (!nextSample.isEmpty() && dirty[nextSample.peek()])
-                dirtyItemsToFix.add(nextSample.poll());
+            while (!nextSample.isEmpty() && dirty[nextSample.peek()]) dirtyItemsToFix.add(nextSample.poll());
             for (int i : dirtyItemsToFix)//fix all the dirty items!
                 sample_weight[i] = expo_sample[i] / (closestDist[i]);
             nextSample.addAll(dirtyItemsToFix);//put them back in the Q
@@ -435,8 +421,7 @@ public class SeedSelectionMethods {
             //now we have new index, determine dists to prev means
             if (j + 1 < k) {
                 //for(k_prev = 0; k_prev < j; k_prev++)
-                ParallelUtils.run(parallel, j, (k_prev, end) ->
-                {
+                ParallelUtils.run(parallel, j, (k_prev, end) -> {
                     for (; k_prev < end; k_prev++) {
                         gamma[k_prev] = Math.pow(dm.dist(indices[k_prev], indices[jj], X, accelCache), 2);
                     }
@@ -464,21 +449,18 @@ public class SeedSelectionMethods {
 
 
         //init poitns to initial center
-        double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) ->
-                {
-                    double partial_sqrd_dist = 0.0;
-                    for (int i = start; i < end; i++) {
-                        double newDist = dm.dist(C.getI(0), i, X, accelCache);
+        double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) -> {
+            double partial_sqrd_dist = 0.0;
+            for (int i = start; i < end; i++) {
+                double newDist = dm.dist(C.getI(0), i, X, accelCache);
 
-                        newDist *= newDist;
-                        if (newDist < closestDist[i])
-                            closestDist[i] = newDist;
-                        partial_sqrd_dist += closestDist[i] * w.get(i);
-                    }
+                newDist *= newDist;
+                if (newDist < closestDist[i]) closestDist[i] = newDist;
+                partial_sqrd_dist += closestDist[i] * w.get(i);
+            }
 
-                    return partial_sqrd_dist;
-                },
-                (z, u) -> z + u);
+            return partial_sqrd_dist;
+        }, (z, u) -> z + u);
 
         for (int t = 0; t < trials; t++) {
             //Lets sample some new points
@@ -487,27 +469,24 @@ public class SeedSelectionMethods {
                 if (w.get(i) * oversample * closestDist[i] / sqrdDistSum > rand.nextDouble())//sample!
                     C.add(i);
 
-            sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) ->
-                    {
-                        double partial_sqrd_dist = 0.0;
-                        for (int i = start; i < end; i++) {
-                            if (closestDist[i] == 0)
-                                continue;
-                            for (int j = orig_size; j < C.size(); j++) {
-                                double newDist = dm.dist(C.get(j), i, X, accelCache);
+            sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) -> {
+                double partial_sqrd_dist = 0.0;
+                for (int i = start; i < end; i++) {
+                    if (closestDist[i] == 0) continue;
+                    for (int j = orig_size; j < C.size(); j++) {
+                        double newDist = dm.dist(C.get(j), i, X, accelCache);
 
-                                newDist *= newDist;
-                                if (newDist < closestDist[i]) {
-                                    closestDist[i] = newDist;
-                                    assigned_too[i] = j;
-                                }
-                            }
-                            partial_sqrd_dist += closestDist[i] * w.get(i);
+                        newDist *= newDist;
+                        if (newDist < closestDist[i]) {
+                            closestDist[i] = newDist;
+                            assigned_too[i] = j;
                         }
+                    }
+                    partial_sqrd_dist += closestDist[i] * w.get(i);
+                }
 
-                        return partial_sqrd_dist;
-                    },
-                    (z, u) -> z + u);
+                return partial_sqrd_dist;
+            }, (z, u) -> z + u);
         }
 
 
@@ -546,21 +525,18 @@ public class SeedSelectionMethods {
 
 
         //init poitns to initial center
-        double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) ->
-                {
-                    double partial_sqrd_dist = 0.0;
-                    for (int i = start; i < end; i++) {
-                        double newDist = dm.dist(C.getI(0), i, X, accelCache);
+        double sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) -> {
+            double partial_sqrd_dist = 0.0;
+            for (int i = start; i < end; i++) {
+                double newDist = dm.dist(C.getI(0), i, X, accelCache);
 
-                        newDist *= newDist;
-                        if (newDist < closestDist[i])
-                            closestDist[i] = newDist;
-                        partial_sqrd_dist += closestDist[i] * w.get(i);
-                    }
+                newDist *= newDist;
+                if (newDist < closestDist[i]) closestDist[i] = newDist;
+                partial_sqrd_dist += closestDist[i] * w.get(i);
+            }
 
-                    return partial_sqrd_dist;
-                },
-                (z, u) -> z + u);
+            return partial_sqrd_dist;
+        }, (z, u) -> z + u);
 
         for (int t = 0; t < trials; t++) {
             //Lets sample some new points
@@ -576,38 +552,35 @@ public class SeedSelectionMethods {
 
             VPTreeMV<Vec> vp = new VPTreeMV<>(X_new_means, dm, parallel);
 
-            sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) ->
-                    {
-                        double partial_sqrd_dist = 0.0;
+            sqrdDistSum = ParallelUtils.run(parallel, X.size(), (start, end) -> {
+                double partial_sqrd_dist = 0.0;
 
-                        IntList neighbors = new IntList();
-                        DoubleList distances = new DoubleList();
+                IntList neighbors = new IntList();
+                DoubleList distances = new DoubleList();
 
-                        for (int i = start; i < end; i++) {
-                            if (closestDist[i] == 0)
-                                continue;
+                for (int i = start; i < end; i++) {
+                    if (closestDist[i] == 0) continue;
 
-                            neighbors.clear();
-                            distances.clear();
-                            vp.search(X.get(i), 1, Math.sqrt(closestDist[i]), neighbors, distances);
+                    neighbors.clear();
+                    distances.clear();
+                    vp.search(X.get(i), 1, Math.sqrt(closestDist[i]), neighbors, distances);
 
-                            if (distances.isEmpty())//no one within radius!
-                                continue;
+                    if (distances.isEmpty())//no one within radius!
+                        continue;
 
-                            double newDist = distances.getD(0);
+                    double newDist = distances.getD(0);
 
-                            newDist *= newDist;
-                            if (newDist < closestDist[i]) {
-                                closestDist[i] = newDist;
-                                assigned_too[i] = orig_size + neighbors.getI(0);
-                            }
+                    newDist *= newDist;
+                    if (newDist < closestDist[i]) {
+                        closestDist[i] = newDist;
+                        assigned_too[i] = orig_size + neighbors.getI(0);
+                    }
 
-                            partial_sqrd_dist += closestDist[i] * w.get(i);
-                        }
+                    partial_sqrd_dist += closestDist[i] * w.get(i);
+                }
 
-                        return partial_sqrd_dist;
-                    },
-                    (z, u) -> z + u);
+                return partial_sqrd_dist;
+            }, (z, u) -> z + u);
         }
 
 
@@ -642,8 +615,7 @@ public class SeedSelectionMethods {
             //Atomic integer storres the index of the vector with the current maximum  minimum distance to a selected centroid
             final AtomicInteger maxDistIndx = new AtomicInteger(0);
 
-            ParallelUtils.run(parallel, d.size(), (start, end) ->
-            {
+            ParallelUtils.run(parallel, d.size(), (start, end) -> {
                 double maxDist = Double.NEGATIVE_INFINITY;
                 int max = indices[0];//set to some lazy value, it will be changed
                 for (int i = start; i < end; i++) {
@@ -657,8 +629,7 @@ public class SeedSelectionMethods {
                 }
 
                 synchronized (maxDistIndx) {
-                    if (closestDist[max] > closestDist[maxDistIndx.get()])
-                        maxDistIndx.set(max);
+                    if (closestDist[max] > closestDist[maxDistIndx.get()]) maxDistIndx.set(max);
                 }
             });
 
@@ -674,8 +645,7 @@ public class SeedSelectionMethods {
         final List<Double> meanQI = dm.getQueryInfo(newMean);
         final List<Vec> X = d.getDataVectors();
 
-        ParallelUtils.run(parallel, d.size(), (start, end) ->
-        {
+        ParallelUtils.run(parallel, d.size(), (start, end) -> {
             for (int i = start; i < end; i++)
                 meanDist[i] = dm.dist(i, newMean, meanQI, X, accelCache);
         });

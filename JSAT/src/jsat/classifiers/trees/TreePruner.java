@@ -5,7 +5,6 @@ import java.util.List;
 
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.DataPoint;
-import jsat.classifiers.DataPointPair;
 import jsat.math.SpecialMath;
 import jsat.utils.IntList;
 

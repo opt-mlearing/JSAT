@@ -13,8 +13,6 @@ import jsat.linear.Vec;
 
 import static java.lang.Math.*;
 
-import java.util.List;
-
 import jsat.DataSet;
 import jsat.SingleWeightVectorModel;
 import jsat.classifiers.calibration.BinaryScoreClassifier;
@@ -22,7 +20,6 @@ import jsat.distributions.Distribution;
 import jsat.distributions.LogUniform;
 import jsat.distributions.Uniform;
 import jsat.exceptions.UntrainedModelException;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 
 /**

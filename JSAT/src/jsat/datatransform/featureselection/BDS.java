@@ -7,7 +7,6 @@ import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.Classifier;
 import jsat.classifiers.DataPoint;
 import jsat.datatransform.DataTransform;
-import jsat.datatransform.DataTransformBase;
 import jsat.datatransform.RemoveAttributeTransform;
 import jsat.regression.RegressionDataSet;
 import jsat.regression.Regressor;

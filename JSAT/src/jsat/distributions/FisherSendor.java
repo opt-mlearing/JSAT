@@ -1,11 +1,9 @@
-
 package jsat.distributions;
 
 import jsat.linear.Vec;
 
 import static java.lang.Math.*;
 import static jsat.math.SpecialMath.*;
-
 
 /**
  * Also known as the F distribution.

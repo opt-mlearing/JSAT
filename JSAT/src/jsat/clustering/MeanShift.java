@@ -24,7 +24,6 @@ import static jsat.utils.SystemInfo.LogicalCores;
 
 import jsat.utils.concurrent.ParallelUtils;
 
-
 /**
  * The MeanShift algorithms performs clustering on a data set by letting the
  * data speak for itself and performing a mode search amongst the data set,

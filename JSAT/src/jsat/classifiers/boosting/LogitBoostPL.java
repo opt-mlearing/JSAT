@@ -1,4 +1,3 @@
-
 package jsat.classifiers.boosting;
 
 import java.util.List;

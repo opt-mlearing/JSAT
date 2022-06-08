@@ -1,4 +1,3 @@
-
 package jsat.classifiers.calibration;
 
 import java.util.Collections;

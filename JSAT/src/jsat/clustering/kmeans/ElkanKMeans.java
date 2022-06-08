@@ -13,7 +13,6 @@ import jsat.clustering.SeedSelectionMethods.SeedSelection;
 
 import static jsat.clustering.SeedSelectionMethods.selectIntialPoints;
 
-import jsat.linear.ConstantVector;
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;
 import jsat.linear.distancemetrics.*;

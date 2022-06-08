@@ -1,8 +1,6 @@
-
 package jsat.classifiers.svm;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 import jsat.SingleWeightVectorModel;
 import jsat.classifiers.CategoricalResults;
@@ -16,7 +14,6 @@ import jsat.exceptions.FailedToFitException;
 import jsat.exceptions.UntrainedModelException;
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 import jsat.regression.RegressionDataSet;
 import jsat.regression.Regressor;

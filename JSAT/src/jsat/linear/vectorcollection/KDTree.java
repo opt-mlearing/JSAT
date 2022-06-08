@@ -1,4 +1,3 @@
-
 package jsat.linear.vectorcollection;
 
 import java.io.Serializable;
@@ -153,8 +152,7 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
 
     @Override
     public void setDistanceMetric(DistanceMetric dm) {
-        if (!(dm instanceof EuclideanDistance || dm instanceof ChebyshevDistance ||
-                dm instanceof ManhattanDistance || dm instanceof MinkowskiDistance))
+        if (!(dm instanceof EuclideanDistance || dm instanceof ChebyshevDistance || dm instanceof ManhattanDistance || dm instanceof MinkowskiDistance))
             throw new ArithmeticException("KD Trees are not compatible with the given distance metric.");
         this.distanceMetric = dm;
     }
@@ -173,8 +171,7 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
         List<Integer> vecIndices = new IntList(size);
         ListUtils.addRange(vecIndices, 0, size, 1);
 
-        if (!parallel)
-            this.root = buildTree(vecIndices, 0, null, null);
+        if (!parallel) this.root = buildTree(vecIndices, 0, null, null);
         else {
             ModifiableCountDownLatch mcdl = new ModifiableCountDownLatch(1);
             this.root = buildTree(vecIndices, 0, ParallelUtils.CACHED_THREAD_POOL, mcdl);
@@ -198,11 +195,9 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
         }
         int indx = size++;
         allVecs.add(x);
-        if (distCache != null)
-            distCache.addAll(distanceMetric.getQueryInfo(x));
+        if (distCache != null) distCache.addAll(distanceMetric.getQueryInfo(x));
 
-        if (root.insert(indx))
-            root = buildTree(IntList.range(size), 0, null, null);
+        if (root.insert(indx)) root = buildTree(IntList.range(size), 0, null, null);
     }
 
     private class KDNode implements Cloneable, Serializable {
@@ -222,10 +217,8 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
         public KDNode(KDNode toCopy) {
             this(toCopy.axis);
             this.pivot_s = toCopy.pivot_s;
-            if (toCopy.left != null)
-                this.left = toCopy.left.clone();
-            if (toCopy.left != null)
-                this.right = toCopy.right.clone();
+            if (toCopy.left != null) this.left = toCopy.left.clone();
+            if (toCopy.left != null) this.right = toCopy.right.clone();
         }
 
         @SuppressWarnings("unused")
@@ -278,20 +271,16 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
             nearKD.searchK(k, knn, target, qi);
 
             double maxDistSoFar = Double.MAX_VALUE;
-            if (knn.size() >= k)
-                maxDistSoFar = knn.get(k - 1).getDist();
-            if (maxDistSoFar > Math.abs(target_s - pivot_s))
-                farKD.searchK(k, knn, target, qi);
+            if (knn.size() >= k) maxDistSoFar = knn.get(k - 1).getDist();
+            if (maxDistSoFar > Math.abs(target_s - pivot_s)) farKD.searchK(k, knn, target, qi);
         }
 
         protected void searchR(double radius, List<Integer> vecsInRage, List<Double> distVecsInRange, Vec target, List<Double> qi) {
             double target_s = target.get(axis);
 
-            if (radius > target_s - pivot_s)
-                left.searchR(radius, vecsInRage, distVecsInRange, target, qi);
+            if (radius > target_s - pivot_s) left.searchR(radius, vecsInRage, distVecsInRange, target, qi);
 
-            if (radius > pivot_s - target_s)
-                right.searchR(radius, vecsInRage, distVecsInRange, target, qi);
+            if (radius > pivot_s - target_s) right.searchR(radius, vecsInRage, distVecsInRange, target, qi);
         }
 
         /**
@@ -303,11 +292,9 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
             boolean target_in_left = target_s <= pivot_s;
 
             if (target_in_left) {
-                if (left.insert(x_indx))
-                    left = buildTree(((KDLeaf) left).owned, axis + 1, null, null);
+                if (left.insert(x_indx)) left = buildTree(((KDLeaf) left).owned, axis + 1, null, null);
             } else {
-                if (right.insert(x_indx))
-                    right = buildTree(((KDLeaf) right).owned, axis + 1, null, null);
+                if (right.insert(x_indx)) right = buildTree(((KDLeaf) right).owned, axis + 1, null, null);
             }
             return false;
         }
@@ -388,8 +375,7 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
         int mod = allVecs.get(0).length();
 
         if (data.size() <= leaf_node_size) {
-            if (threadpool != null)
-                mcdl.countDown();
+            if (threadpool != null) mcdl.countDown();
 //            return new KDNode(data.get(0), depth % mod);
             return new KDLeaf(depth % mod, data);
         }
@@ -461,8 +447,7 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
                 for (int i = 0; i < data.size(); i++) {
                     V v = get(i);
                     double val = v.get(maxSpreadDim);
-                    if (Math.abs(midPoint - val) < Math.abs(midPoint - closestVal))
-                        closestVal = val;
+                    if (Math.abs(midPoint - val) < Math.abs(midPoint - closestVal)) closestVal = val;
                 }
                 pivot_val = closestVal;
                 break;
@@ -481,13 +466,10 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
             //lets go through and push the data around the pivot value
             int front = 0;
             for (int i = 0; i < data.size(); i++)
-                if (get(data.get(i)).get(pivot) <= pivot_val)
-                    ListUtils.swap(data, front++, i);
+                if (get(data.get(i)).get(pivot) <= pivot_val) ListUtils.swap(data, front++, i);
             //How deep would we go if the tree was balanced?
             int balanced_depth = FastMath.floor_log2(allVecs.size());
-            if (balanced_depth * 3 / 2 < depth
-                    && (front < leaf_node_size / 3 || data.size() - front < leaf_node_size / 3)
-                    || balanced_depth * 3 < depth)//too lopsided, fall back to medain spliting!
+            if (balanced_depth * 3 / 2 < depth && (front < leaf_node_size / 3 || data.size() - front < leaf_node_size / 3) || balanced_depth * 3 < depth)//too lopsided, fall back to medain spliting!
                 pivot_val = Double.NaN;
             else {
                 splitIndex = front - 1;
@@ -525,8 +507,7 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
             IntList data_l = new IntList(data.subList(0, splitIndex + 1));
             IntList data_r = new IntList(data.subList(splitIndex + 1, data.size()));
             //Right side first, it will start running on a different core
-            threadpool.submit(() ->
-            {
+            threadpool.submit(() -> {
                 node.setRight(buildTree(data_r, depth + 1, threadpool, mcdl));
             });
 
@@ -554,8 +535,7 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
 
     @Override
     public void search(Vec query, int numNeighbors, List<Integer> neighbors, List<Double> distances) {
-        if (numNeighbors < 1)
-            throw new RuntimeException("Invalid number of neighbors to search for");
+        if (numNeighbors < 1) throw new RuntimeException("Invalid number of neighbors to search for");
 
         BoundedSortedList<IndexDistPair> knns = new BoundedSortedList<>(numNeighbors);
 
@@ -583,8 +563,7 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
 
     @Override
     public void search(Vec query, double range, List<Integer> neighbors, List<Double> distances) {
-        if (range <= 0)
-            throw new RuntimeException("Range must be a positive number");
+        if (range <= 0) throw new RuntimeException("Range must be a positive number");
         neighbors.clear();
         distances.clear();
 
@@ -602,13 +581,10 @@ public class KDTree<V extends Vec> implements IncrementalCollection<V> {
     @Override
     public KDTree<V> clone() {
         KDTree<V> clone = new KDTree<>(distanceMetric, pvSelection);
-        if (this.distCache != null)
-            clone.distCache = new DoubleList(this.distCache);
-        if (this.allVecs != null)
-            clone.allVecs = new ArrayList<>(this.allVecs);
+        if (this.distCache != null) clone.distCache = new DoubleList(this.distCache);
+        if (this.allVecs != null) clone.allVecs = new ArrayList<>(this.allVecs);
         clone.size = this.size;
-        if (this.root != null)
-            clone.root = this.root.clone();
+        if (this.root != null) clone.root = this.root.clone();
         return clone;
     }
 

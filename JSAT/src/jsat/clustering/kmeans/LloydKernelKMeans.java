@@ -1,4 +1,3 @@
-
 package jsat.clustering.kmeans;
 
 import jsat.DataSet;

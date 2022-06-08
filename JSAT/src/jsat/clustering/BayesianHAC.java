@@ -1,6 +1,3 @@
-/*
- * This code was contributed under the Public Domain
- */
 package jsat.clustering;
 
 import java.util.List;

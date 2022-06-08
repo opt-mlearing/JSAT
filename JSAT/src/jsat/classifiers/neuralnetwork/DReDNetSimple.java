@@ -1,4 +1,3 @@
-
 package jsat.classifiers.neuralnetwork;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import jsat.classifiers.neuralnetwork.regularizers.Max2NormRegularizer;
 import jsat.linear.SparseVector;
 import jsat.linear.Vec;
 import jsat.math.optimization.stochastic.AdaDelta;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 import jsat.utils.IntList;
 import jsat.utils.ListUtils;

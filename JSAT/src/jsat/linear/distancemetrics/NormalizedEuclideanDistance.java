@@ -1,10 +1,6 @@
 package jsat.linear.distancemetrics;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jsat.DataSet;
 import jsat.classifiers.ClassificationDataSet;
@@ -15,8 +11,6 @@ import jsat.linear.Vec;
 import jsat.linear.VecOps;
 import jsat.regression.RegressionDataSet;
 import jsat.utils.DoubleList;
-import jsat.utils.FakeExecutor;
-import jsat.utils.SystemInfo;
 import jsat.utils.concurrent.ParallelUtils;
 
 /**

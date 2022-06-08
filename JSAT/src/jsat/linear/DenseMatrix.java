@@ -1,4 +1,3 @@
-
 package jsat.linear;
 
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.logging.Logger;
 import jsat.utils.FakeExecutor;
 
 import static java.lang.Math.*;
-import static jsat.linear.GenericMatrix.NB2;
 import static jsat.utils.SystemInfo.*;
 
 /**

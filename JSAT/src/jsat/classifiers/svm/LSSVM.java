@@ -12,9 +12,7 @@ import jsat.regression.Regressor;
 
 import static java.lang.Math.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
@@ -26,13 +24,7 @@ import jsat.exceptions.FailedToFitException;
 import jsat.parameters.Parameterized;
 import jsat.parameters.Parameter.WarmParameter;
 import jsat.regression.*;
-import jsat.utils.FakeExecutor;
-import jsat.utils.PairedReturn;
-import jsat.utils.SystemInfo;
 import jsat.utils.concurrent.ParallelUtils;
-
-import static jsat.utils.concurrent.ParallelUtils.*;
-
 
 /**
  * The Least Squares Support Vector Machine (LS-SVM) is an alternative to the

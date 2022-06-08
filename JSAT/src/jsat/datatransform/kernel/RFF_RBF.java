@@ -13,7 +13,6 @@ import jsat.linear.RandomMatrix;
 import jsat.linear.RandomVector;
 import jsat.linear.Vec;
 import jsat.utils.random.RandomUtil;
-import jsat.utils.random.XORWOW;
 
 /**
  * An Implementation of Random Fourier Features for the {@link RBFKernel}. It
@@ -99,8 +98,7 @@ public class RFF_RBF extends DataTransformBase {
             throw new IllegalArgumentException("The number of numeric features must be positive, not " + featurSize);
         if (sigma <= 0 || Double.isInfinite(sigma) || Double.isNaN(sigma))
             throw new IllegalArgumentException("The sigma parameter must be positive, not " + sigma);
-        if (dim <= 1)
-            throw new IllegalArgumentException("The target dimension must be positive, not " + dim);
+        if (dim <= 1) throw new IllegalArgumentException("The target dimension must be positive, not " + dim);
         transform = new RandomMatrixRFF_RBF(Math.sqrt(0.5 / (sigma * sigma)), featurSize, dim, rand.nextLong());
         offsets = new RandomVectorRFF_RBF(dim, rand.nextLong());
 
@@ -130,10 +128,8 @@ public class RFF_RBF extends DataTransformBase {
      * @param toCopy the object to copy
      */
     protected RFF_RBF(RFF_RBF toCopy) {
-        if (toCopy.transform != null)
-            this.transform = toCopy.transform.clone();
-        if (toCopy.offsets != null)
-            this.offsets = toCopy.offsets.clone();
+        if (toCopy.transform != null) this.transform = toCopy.transform.clone();
+        if (toCopy.offsets != null) this.offsets = toCopy.offsets.clone();
         this.dim = toCopy.dim;
         this.inMemory = toCopy.inMemory;
         this.sigma = toCopy.sigma;

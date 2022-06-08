@@ -1,6 +1,3 @@
-/*
- * This code contributed under the public domain.
- */
 package jsat.classifiers.linear;
 
 import java.util.ArrayList;

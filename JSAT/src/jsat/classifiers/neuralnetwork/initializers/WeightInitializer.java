@@ -1,4 +1,3 @@
-
 package jsat.classifiers.neuralnetwork.initializers;
 
 import java.io.Serializable;

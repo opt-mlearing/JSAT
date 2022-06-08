@@ -1,4 +1,3 @@
-
 package jsat.classifiers.trees;
 
 import java.util.ArrayList;
@@ -35,16 +34,14 @@ public class ID3 implements Classifier {
     }
 
     static private CategoricalResults walkTree(ID3Node node, DataPoint data) {
-        if (node.isLeaf())
-            return node.getResult();
+        if (node.isLeaf()) return node.getResult();
 
         return walkTree(node.getNode(data.getCategoricalValue(node.getAttributeId())), data);
     }
 
     @Override
     public void train(ClassificationDataSet dataSet, boolean parallel) {
-        if (dataSet.getNumNumericalVars() != 0)
-            throw new RuntimeException("ID3 only supports categorical data");
+        if (dataSet.getNumNumericalVars() != 0) throw new RuntimeException("ID3 only supports categorical data");
 
         predicting = dataSet.getPredicting();
         attributes = dataSet.getCategories();
@@ -110,8 +107,7 @@ public class ID3 implements Classifier {
             final int ii = i;
             final List<DataPointPair<Integer>> bestSplitII = bestSplit.get(ii);
             latch.countUp();
-            threadPool.submit(() ->
-            {
+            threadPool.submit(() -> {
                 node.setNode(ii, buildTree(bestSplitII, newRemaining, threadPool));
             });
 
@@ -187,8 +183,7 @@ public class ID3 implements Classifier {
 
 
     private double entropy(List<DataPointPair<Integer>> s) {
-        if (s.isEmpty())
-            return 0;
+        if (s.isEmpty()) return 0;
         double[] probs = new double[predicting.getNumOfCategories()];
         for (DataPointPair<Integer> dpp : s)
             probs[dpp.getPair()] += 1;
@@ -198,8 +193,7 @@ public class ID3 implements Classifier {
         double entr = 0;
 
         for (int i = 0; i < probs.length; i++)
-            if (probs[i] != 0)
-                entr += probs[i] * (Math.log(probs[i]) / Math.log(2));
+            if (probs[i] != 0) entr += probs[i] * (Math.log(probs[i]) / Math.log(2));
         //The entr will be negative unless it is zero, this way we dont return negative zero
         return Math.abs(entr);
     }

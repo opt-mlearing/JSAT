@@ -11,7 +11,6 @@ import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.linear.distancemetrics.TrainableDistanceMetric;
 import jsat.linear.vectorcollection.DefaultVectorCollection;
 import jsat.linear.vectorcollection.VectorCollection;
-import jsat.linear.vectorcollection.VectorCollectionUtils;
 import jsat.math.OnLineStatistics;
 import jsat.utils.concurrent.ParallelUtils;
 

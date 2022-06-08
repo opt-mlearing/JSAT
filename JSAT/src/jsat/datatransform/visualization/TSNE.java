@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2015 Edward Raff
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package jsat.datatransform.visualization;
 
 import java.util.*;
@@ -122,8 +106,7 @@ public class TSNE implements VisualizationTransform {
      * @param T the number of gradient descent iterations
      */
     public void setIterations(int T) {
-        if (T <= 1)
-            throw new IllegalArgumentException("number of iterations must be positive, not " + T);
+        if (T <= 1) throw new IllegalArgumentException("number of iterations must be positive, not " + T);
         this.T = T;
     }
 
@@ -184,8 +167,7 @@ public class TSNE implements VisualizationTransform {
             final Quadtree qt = new Quadtree(y);
 
             //TODO might not result in even load
-            double Z = ParallelUtils.run(parallel, N, (start, end) ->
-            {
+            double Z = ParallelUtils.run(parallel, N, (start, end) -> {
                 double[] workSpace = new double[s];
                 double local_Z = 0;
                 for (int i = start; i < end; i++) {
@@ -208,8 +190,7 @@ public class TSNE implements VisualizationTransform {
             //This second loops computes the F_attr forces
             final CountDownLatch latch_g1 = new CountDownLatch(SystemInfo.LogicalCores);
 
-            ParallelUtils.run(parallel, N, (start, end) ->
-            {
+            ParallelUtils.run(parallel, N, (start, end) -> {
                 for (int i = start; i < end; i++)//N
                 {
                     for (int j_indx = 0; j_indx < knn; j_indx++) //O(u)
@@ -218,8 +199,7 @@ public class TSNE implements VisualizationTransform {
                         if (i == j)//this should never happen b/c we skipped that when creating nearMe
                             continue;
                         double pij = nearMePij[i][j_indx];
-                        if (ITER < T * exageratedPortion)
-                            pij *= alpha;
+                        if (ITER < T * exageratedPortion) pij *= alpha;
                         double cnst = pij * q_ijZ(i, j, y, s) * 4;
 
                         for (int k = 0; k < s; k++) {
@@ -298,8 +278,7 @@ public class TSNE implements VisualizationTransform {
             for (int i = 0; i < N; i++)
                 vecIndex.put(vecs.get(i), i);
 
-            ParallelUtils.run(parallel, N, (i) ->
-            {
+            ParallelUtils.run(parallel, N, (i) -> {
                 Vec x_i = vecs.get(i);
                 List<? extends VecPaired<Vec, Double>> closest = vc.search(x_i, knn + 1);//+1 b/c self is closest
                 neighbors.set(i, closest);
@@ -324,14 +303,12 @@ public class TSNE implements VisualizationTransform {
         }
 
         //now compute the bandwidth for each datum
-        ParallelUtils.run(parallel, N, (i) ->
-        {
+        ParallelUtils.run(parallel, N, (i) -> {
             boolean tryAgain = false;
             do {
                 tryAgain = false;
                 try {
-                    double sigma_i = Zeroin.root(1e-2, 100, minSigma.get(), maxSigma.get(),
-                            (double x) -> perp(i, nearMe, x, neighbors, vecs, accelCache, dm) - perplexity);
+                    double sigma_i = Zeroin.root(1e-2, 100, minSigma.get(), maxSigma.get(), (double x) -> perp(i, nearMe, x, neighbors, vecs, accelCache, dm) - perplexity);
 
                     sigma[i] = sigma_i;
                 } catch (ArithmeticException exception)//perp not in search range?
@@ -346,12 +323,10 @@ public class TSNE implements VisualizationTransform {
                         maxSigma.set(Math.min(maxSigma.get() * 2, Double.MAX_VALUE / 2));
                     }
                 }
-            }
-            while (tryAgain);
+            } while (tryAgain);
         });
 
-        ParallelUtils.run(parallel, N, (i) ->
-        {
+        ParallelUtils.run(parallel, N, (i) -> {
             for (int j_indx = 0; j_indx < knn; j_indx++) {
                 int j = nearMe[i][j_indx];
                 nearMePij[i][j_indx] = p_ij(i, j, sigma[i], sigma[j], neighbors, vecs, accelCache, dm);
@@ -368,8 +343,7 @@ public class TSNE implements VisualizationTransform {
      * @return the contribution to the normalizing constant Z
      */
     private double computeF_rep(Quadtree.Node node, int i, double[] z, double[] workSpace) {
-        if (node == null || node.N_cell == 0 || node.indx == i)
-            return 0;
+        if (node == null || node.N_cell == 0 || node.indx == i) return 0;
         /*
          * Original paper says to use the diagonal divided by the squared 2
          * norm. This dosn't seem to work at all. Tried some different ideas
@@ -388,8 +362,7 @@ public class TSNE implements VisualizationTransform {
 
         if (node.NW == null || r_cell < theta * dot)//good enough!
         {
-            if (node.indx == i)
-                return 0;
+            if (node.indx == i) return 0;
 
             double Z = 1.0 / (1.0 + dot);
             double q_cell_Z_sqrd = -node.N_cell * (Z * Z);
@@ -454,8 +427,7 @@ public class TSNE implements VisualizationTransform {
          * "Because we are only interested in modeling pairwise similarities, we
          * set the value of pi|i to zero" from Visualizing Data using t-SNE
          */
-        if (i == j)
-            return 0;
+        if (i == j) return 0;
         //nearest is self, use taht to get indexed values
         Vec x_j = neighbors.get(j).get(0).getVector();
 //        Vec x_i = neighbors.get(i).get(0).getVector();
@@ -506,8 +478,7 @@ public class TSNE implements VisualizationTransform {
         for (int j_indx = 0; j_indx < nearMe[i].length; j_indx++) {
             double p_ji = p_j_i(nearMe[i][j_indx], i, sigma, neighbors, vecs, accelCache, dm);
 
-            if (p_ji > 0)
-                hp += p_ji * FastMath.log2(p_ji);
+            if (p_ji > 0) hp += p_ji * FastMath.log2(p_ji);
         }
         hp *= -1;
 
@@ -580,8 +551,7 @@ public class TSNE implements VisualizationTransform {
                     indx = i;
                 else {
                     if (indx >= 0) {
-                        if (Math.abs(z[indx * 2] - z[i * 2]) < 1e-13 &&
-                                Math.abs(z[indx * 2 + 1] - z[i * 2 + 1]) < 1e-13) {
+                        if (Math.abs(z[indx * 2] - z[i * 2]) < 1e-13 && Math.abs(z[indx * 2 + 1] - z[i * 2 + 1]) < 1e-13) {
                             //near exact same value
                             //just let increase local weight indicate a "heavier" leaf
                             return;
@@ -622,10 +592,8 @@ public class TSNE implements VisualizationTransform {
 
             @Override
             public Iterator<Node> iterator() {
-                if (NW == null)
-                    return Collections.emptyIterator();
-                else
-                    return Arrays.asList(NW, NE, SW, SE).iterator();
+                if (NW == null) return Collections.emptyIterator();
+                else return Arrays.asList(NW, NE, SW, SE).iterator();
             }
 
         }

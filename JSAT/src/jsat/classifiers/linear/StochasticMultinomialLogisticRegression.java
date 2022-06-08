@@ -3,7 +3,6 @@ package jsat.classifiers.linear;
 import static java.lang.Math.*;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 import jsat.SimpleWeightVectorModel;
 import jsat.classifiers.*;
@@ -16,7 +15,6 @@ import jsat.linear.Vec;
 import jsat.math.MathTricks;
 import jsat.math.decayrates.DecayRate;
 import jsat.math.decayrates.ExponetialDecay;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 import jsat.utils.IntList;
 import jsat.utils.ListUtils;

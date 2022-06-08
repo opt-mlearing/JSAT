@@ -1,4 +1,3 @@
-
 package jsat.distributions.empirical.kernelfunc;
 
 import static java.lang.Math.*;

@@ -1,7 +1,6 @@
 package jsat.classifiers.linear;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 import jsat.SingleWeightVectorModel;
 import jsat.classifiers.*;
@@ -10,12 +9,10 @@ import jsat.linear.DenseVector;
 import jsat.linear.IndexValue;
 import jsat.linear.Vec;
 import jsat.lossfunctions.*;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 import jsat.regression.RegressionDataSet;
 import jsat.regression.Regressor;
 import jsat.utils.random.RandomUtil;
-import jsat.utils.random.XORWOW;
 
 /**
  * Implementation of Stochastic Coordinate Descent for L1 regularized

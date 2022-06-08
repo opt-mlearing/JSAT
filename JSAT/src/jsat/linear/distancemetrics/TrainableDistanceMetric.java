@@ -1,4 +1,3 @@
-
 package jsat.linear.distancemetrics;
 
 import java.util.List;

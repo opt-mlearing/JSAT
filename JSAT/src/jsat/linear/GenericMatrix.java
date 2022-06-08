@@ -1,4 +1,3 @@
-
 package jsat.linear;
 
 import java.util.concurrent.ExecutionException;

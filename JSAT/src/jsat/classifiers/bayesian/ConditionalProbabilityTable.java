@@ -1,11 +1,9 @@
-
 package jsat.classifiers.bayesian;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import jsat.DataSet;
 import jsat.classifiers.CategoricalData;

@@ -1,4 +1,3 @@
-
 package jsat.distributions.empirical;
 
 import java.util.*;

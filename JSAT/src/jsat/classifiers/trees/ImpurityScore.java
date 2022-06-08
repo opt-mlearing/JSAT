@@ -5,7 +5,6 @@ import static java.lang.Math.*;
 import java.util.Arrays;
 
 import jsat.classifiers.CategoricalResults;
-import jsat.classifiers.DataPoint;
 
 /**
  * ImpurityScore provides a measure of the impurity of a set of data points

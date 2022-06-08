@@ -1,9 +1,6 @@
 package jsat.clustering.kmeans;
 
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jsat.DataSet;
 import jsat.clustering.KClustererBase;

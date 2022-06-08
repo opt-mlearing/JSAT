@@ -1,4 +1,3 @@
-
 package jsat.clustering.evaluation.intra;
 
 import java.util.List;

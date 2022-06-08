@@ -1,4 +1,3 @@
-
 package jsat.distributions.empirical.kernelfunc;
 
 import java.io.Serializable;

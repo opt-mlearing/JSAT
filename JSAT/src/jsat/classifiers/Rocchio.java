@@ -1,4 +1,3 @@
-
 package jsat.classifiers;
 
 import java.util.*;

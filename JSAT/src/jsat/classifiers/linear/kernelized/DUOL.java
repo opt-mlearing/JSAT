@@ -19,7 +19,6 @@ import jsat.distributions.kernels.KernelTrick;
 import jsat.exceptions.FailedToFitException;
 import jsat.exceptions.UntrainedModelException;
 import jsat.linear.Vec;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameter.ParameterHolder;
 import jsat.parameters.Parameterized;
 import jsat.utils.DoubleList;
@@ -109,10 +108,8 @@ public class DUOL extends BaseUpdateableClassifier implements BinaryScoreClassif
                 this.S.add(v.clone());
             this.f_s = new DoubleList(other.f_s);
             this.alphas = new DoubleList(other.alphas);
-            if (other.accelCache != null)
-                this.accelCache = new DoubleList(other.accelCache);
-            if (other.kTmp != null)
-                this.kTmp = new DoubleList(other.kTmp);
+            if (other.accelCache != null) this.accelCache = new DoubleList(other.accelCache);
+            if (other.kTmp != null) this.kTmp = new DoubleList(other.kTmp);
         }
         this.rho = other.rho;
         this.C = other.C;
@@ -187,8 +184,7 @@ public class DUOL extends BaseUpdateableClassifier implements BinaryScoreClassif
 
     @Override
     public void setUp(CategoricalData[] categoricalAttributes, int numericAttributes, CategoricalData predicting) {
-        if (numericAttributes <= 0)
-            throw new FailedToFitException("DUOL requires numeric features");
+        if (numericAttributes <= 0) throw new FailedToFitException("DUOL requires numeric features");
         else if (predicting.getNumOfCategories() != 2)
             throw new FailedToFitException("DUOL supports only binnary classification");
 
@@ -208,8 +204,7 @@ public class DUOL extends BaseUpdateableClassifier implements BinaryScoreClassif
 
         final double loss_t = max(0, 1 - y_t * score);
 
-        if (loss_t <= 0)
-            return;
+        if (loss_t <= 0) return;
 
         //start of line 8:
         int b = -1;
@@ -297,13 +292,11 @@ public class DUOL extends BaseUpdateableClassifier implements BinaryScoreClassif
     }
 
     private double score(Vec x, List<Double> qi, boolean store) {
-        if (store)
-            kTmp.clear();
+        if (store) kTmp.clear();
         double score = 0;
         for (int i = 0; i < S.size(); i++) {
             double tmp = k.eval(i, x, qi, S, accelCache);
-            if (store)
-                kTmp.add(tmp);
+            if (store) kTmp.add(tmp);
             score += alphas.get(i) * tmp;
         }
         return score;
@@ -315,14 +308,11 @@ public class DUOL extends BaseUpdateableClassifier implements BinaryScoreClassif
 
     @Override
     public CategoricalResults classify(DataPoint data) {
-        if (alphas == null)
-            throw new UntrainedModelException("Model has not yet been trained");
+        if (alphas == null) throw new UntrainedModelException("Model has not yet been trained");
         CategoricalResults cr = new CategoricalResults(2);
         double score = getScore(data);
-        if (score < 0)
-            cr.setProb(0, 1.0);
-        else
-            cr.setProb(1, 1.0);
+        if (score < 0) cr.setProb(0, 1.0);
+        else cr.setProb(1, 1.0);
         return cr;
     }
 

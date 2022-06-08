@@ -1,7 +1,6 @@
 package jsat.clustering.hierarchical;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 import jsat.DataSet;
 import jsat.classifiers.DataPoint;

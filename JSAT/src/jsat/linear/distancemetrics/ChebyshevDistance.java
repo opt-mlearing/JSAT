@@ -1,8 +1,4 @@
-
 package jsat.linear.distancemetrics;
-
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import jsat.linear.Vec;
 

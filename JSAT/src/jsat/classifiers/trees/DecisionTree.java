@@ -1,8 +1,6 @@
-
 package jsat.classifiers.trees;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,7 +9,6 @@ import jsat.classifiers.CategoricalResults;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.Classifier;
 import jsat.classifiers.DataPoint;
-import jsat.classifiers.DataPointPair;
 import jsat.classifiers.trees.ImpurityScore.ImpurityMeasure;
 
 import static jsat.classifiers.trees.TreePruner.*;

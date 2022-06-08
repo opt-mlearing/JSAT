@@ -1,14 +1,11 @@
 package jsat.classifiers.svm.extended;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-
 import jsat.classifiers.ClassificationDataSet;
 import jsat.linear.Vec;
 import jsat.utils.IntList;
 import jsat.utils.ListUtils;
 import jsat.utils.random.RandomUtil;
-import jsat.utils.random.XORWOW;
 
 /**
  * This is the batch variant of the Adaptive Multi-Hyperplane Machine (AMM)

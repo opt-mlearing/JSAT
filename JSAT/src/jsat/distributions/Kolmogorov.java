@@ -1,9 +1,6 @@
-
 package jsat.distributions;
 
 import jsat.linear.Vec;
-import jsat.math.Function;
-import jsat.math.rootfinding.RiddersMethod;
 
 import static java.lang.Math.*;
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import jsat.linear.Vec;
 import jsat.linear.distancemetrics.DistanceMetric;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameter.ParameterHolder;
 
 /**

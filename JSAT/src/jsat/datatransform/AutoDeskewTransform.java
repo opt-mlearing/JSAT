@@ -1,4 +1,3 @@
-
 package jsat.datatransform;
 
 import java.util.Arrays;
@@ -41,8 +40,7 @@ public class AutoDeskewTransform implements InPlaceTransform {
 
         @Override
         public double indexFunc(double value, int index) {
-            if (index < 0)
-                return 0.0;
+            if (index < 0) return 0.0;
             return transform(value, finalLambdas[index], mins[index]);
         }
     };
@@ -132,8 +130,7 @@ public class AutoDeskewTransform implements InPlaceTransform {
     @Override
     public void fit(DataSet dataSet) {
         //going to try leaving things alone nomatter what
-        if (!lambdas.contains(1.0))
-            lambdas.add(1.0);
+        if (!lambdas.contains(1.0)) lambdas.add(1.0);
 
         OnLineStatistics[][] stats = new OnLineStatistics[lambdas.size()][dataSet.getNumNumericalVars()];
         for (int i = 0; i < stats.length; i++)
@@ -146,8 +143,7 @@ public class AutoDeskewTransform implements InPlaceTransform {
         //First pass, get min/max values
         for (int i = 0; i < dataSet.size(); i++) {
             Vec x = dataSet.getDataPoint(i).getNumericalValues();
-            if (x.isSparse())
-                containsSparseVecs = true;
+            if (x.isSparse()) containsSparseVecs = true;
             for (IndexValue iv : x) {
                 final int indx = iv.getIndex();
                 final double val = iv.getValue();
@@ -155,9 +151,8 @@ public class AutoDeskewTransform implements InPlaceTransform {
                 mins[indx] = Math.min(val, mins[indx]);
             }
         }
-        if (containsSparseVecs)
-            for (int i = 0; i < mins.length; i++)//done b/c we only iterated the non-zeros
-                mins[i] = Math.min(0, mins[i]);
+        if (containsSparseVecs) for (int i = 0; i < mins.length; i++)//done b/c we only iterated the non-zeros
+            mins[i] = Math.min(0, mins[i]);
 
         //Second pass, find the best skew transform
         for (int i = 0; i < dataSet.size(); i++) {
@@ -202,8 +197,7 @@ public class AutoDeskewTransform implements InPlaceTransform {
 
             if (origSkew > minSkew * 1.05)//only change if there is a reasonable improvment
                 finalLambdas[d] = bestLambda;
-            else
-                finalLambdas[d] = 1.0;
+            else finalLambdas[d] = 1.0;
         }
     }
 
@@ -218,8 +212,7 @@ public class AutoDeskewTransform implements InPlaceTransform {
     }
 
     private static double transform(final double val, final double lambda, final double min) {
-        if (val == 0)
-            return 0;
+        if (val == 0) return 0;
         //special cases
         if (lambda == 2) {
             return val * val;

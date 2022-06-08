@@ -1,4 +1,3 @@
-
 package jsat.classifiers.bayesian;
 
 import static java.lang.Math.exp;

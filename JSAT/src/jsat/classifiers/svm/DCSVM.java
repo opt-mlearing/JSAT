@@ -1,55 +1,29 @@
-/*
- * Copyright (C) 2016 Edward Raff
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package jsat.classifiers.svm;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jsat.classifiers.CategoricalResults;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.Classifier;
 import jsat.classifiers.DataPoint;
 import jsat.classifiers.calibration.BinaryScoreClassifier;
-import jsat.classifiers.neuralnetwork.RBFNet;
 import jsat.clustering.kmeans.ElkanKernelKMeans;
 import jsat.clustering.kmeans.KernelKMeans;
-import jsat.clustering.kmeans.LloydKernelKMeans;
 import jsat.distributions.kernels.KernelTrick;
 import jsat.distributions.kernels.RBFKernel;
-import jsat.exceptions.FailedToFitException;
 import jsat.exceptions.UntrainedModelException;
 import jsat.linear.Vec;
 import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 import jsat.utils.DoubleList;
-import jsat.utils.FakeExecutor;
 import jsat.utils.IntList;
 import jsat.utils.IntSet;
 import jsat.utils.ListUtils;
-import jsat.utils.SystemInfo;
 import jsat.utils.concurrent.ParallelUtils;
 
 /**

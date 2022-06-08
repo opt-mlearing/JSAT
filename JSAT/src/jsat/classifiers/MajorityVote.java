@@ -1,8 +1,6 @@
-
 package jsat.classifiers;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * The Majority Vote classifier is a simple ensemble classifier. Given a list of base classifiers,

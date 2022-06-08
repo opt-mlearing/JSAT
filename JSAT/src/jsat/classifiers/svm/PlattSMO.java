@@ -1,20 +1,16 @@
-
 package jsat.classifiers.svm;
 
 import static java.lang.Math.*;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 import jsat.DataSet;
 import jsat.classifiers.*;
 import jsat.classifiers.calibration.BinaryScoreClassifier;
 import jsat.distributions.Distribution;
-import jsat.distributions.Exponential;
 import jsat.distributions.LogUniform;
 import jsat.distributions.kernels.KernelTrick;
 import jsat.distributions.kernels.LinearKernel;
-import jsat.distributions.kernels.RBFKernel;
 import jsat.exceptions.FailedToFitException;
 import jsat.exceptions.UntrainedModelException;
 import jsat.linear.ConstantVector;

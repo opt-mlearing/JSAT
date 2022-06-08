@@ -1,17 +1,10 @@
-
 package jsat.linear.distancemetrics;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jsat.linear.Vec;
 import jsat.linear.VecOps;
 import jsat.utils.DoubleList;
-import jsat.utils.FakeExecutor;
-import jsat.utils.SystemInfo;
 import jsat.utils.concurrent.ParallelUtils;
 
 /**
@@ -57,8 +50,7 @@ public class WeightedEuclideanDistance implements DistanceMetric {
      * @throws NullPointerException if {@code w} is null
      */
     public void setWeight(Vec w) {
-        if (w == null)
-            throw new NullPointerException();
+        if (w == null) throw new NullPointerException();
         this.w = w;
     }
 
@@ -109,8 +101,7 @@ public class WeightedEuclideanDistance implements DistanceMetric {
     public List<Double> getAccelerationCache(List<? extends Vec> vecs, boolean parallel) {
         //Store the pnorms in the cache
         double[] cache = new double[vecs.size()];
-        ParallelUtils.run(parallel, vecs.size(), (start, end) ->
-        {
+        ParallelUtils.run(parallel, vecs.size(), (start, end) -> {
             for (int i = start; i < end; i++) {
                 Vec v = vecs.get(i);
                 cache[i] = VecOps.weightedDot(w, v, v);
@@ -121,16 +112,14 @@ public class WeightedEuclideanDistance implements DistanceMetric {
 
     @Override
     public double dist(int a, int b, List<? extends Vec> vecs, List<Double> cache) {
-        if (cache == null)
-            return dist(vecs.get(a), vecs.get(b));
+        if (cache == null) return dist(vecs.get(a), vecs.get(b));
 
         return Math.sqrt(cache.get(a) + cache.get(b) - 2 * VecOps.weightedDot(w, vecs.get(a), vecs.get(b)));
     }
 
     @Override
     public double dist(int a, Vec b, List<? extends Vec> vecs, List<Double> cache) {
-        if (cache == null)
-            return dist(vecs.get(a), b);
+        if (cache == null) return dist(vecs.get(a), b);
 
         return Math.sqrt(cache.get(a) + VecOps.weightedDot(w, b, b) - 2 * VecOps.weightedDot(w, vecs.get(a), b));
     }
@@ -144,8 +133,7 @@ public class WeightedEuclideanDistance implements DistanceMetric {
 
     @Override
     public double dist(int a, Vec b, List<Double> qi, List<? extends Vec> vecs, List<Double> cache) {
-        if (cache == null)
-            return dist(vecs.get(a), b);
+        if (cache == null) return dist(vecs.get(a), b);
 
         return Math.sqrt(cache.get(a) + qi.get(0) - 2 * VecOps.weightedDot(w, vecs.get(a), b));
     }

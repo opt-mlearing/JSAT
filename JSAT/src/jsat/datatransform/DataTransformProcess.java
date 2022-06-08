@@ -6,7 +6,6 @@ import java.util.List;
 import jsat.DataSet;
 import jsat.classifiers.DataPoint;
 import jsat.linear.Vec;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameter.ParameterHolder;
 import jsat.parameters.Parameterized;
 

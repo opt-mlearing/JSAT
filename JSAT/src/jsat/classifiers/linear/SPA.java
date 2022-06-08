@@ -10,7 +10,6 @@ import jsat.classifiers.*;
 import jsat.distributions.Distribution;
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 import jsat.utils.IndexTable;
 

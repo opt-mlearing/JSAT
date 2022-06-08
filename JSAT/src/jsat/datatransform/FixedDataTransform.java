@@ -1,6 +1,3 @@
-/*
- * This code contributed in the public domain.
- */
 package jsat.datatransform;
 
 import jsat.classifiers.DataPoint;

@@ -1,4 +1,3 @@
-
 package jsat.classifiers.neuralnetwork;
 
 import jsat.SingleWeightVectorModel;

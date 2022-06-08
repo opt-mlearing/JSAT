@@ -1,16 +1,9 @@
-
 package jsat.linear.vectorcollection;
 
 import java.io.Serializable;
-
-import static java.lang.Math.max;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,9 +11,7 @@ import jsat.linear.Vec;
 import jsat.linear.VecPaired;
 import jsat.linear.distancemetrics.DistanceMetric;
 import jsat.utils.DoubleList;
-import jsat.utils.FibHeap;
 import jsat.utils.IntList;
-import jsat.utils.Tuple3;
 import jsat.utils.concurrent.ParallelUtils;
 
 /**

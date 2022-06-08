@@ -4,7 +4,6 @@ import static java.lang.Math.*;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
 
 import jsat.DataSet;
 import jsat.classifiers.CategoricalResults;

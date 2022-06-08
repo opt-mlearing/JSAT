@@ -1,4 +1,3 @@
-
 package jsat.clustering;
 
 import java.util.*;

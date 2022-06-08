@@ -13,7 +13,6 @@ import jsat.distributions.Uniform;
 import jsat.parameters.Parameter.ParameterHolder;
 import jsat.parameters.Parameterized;
 import jsat.utils.DoubleList;
-import jsat.utils.FakeExecutor;
 
 /**
  * Emphasis Boost is a generalization of the Real AdaBoost algorithm, expanding

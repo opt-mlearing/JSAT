@@ -1,4 +1,3 @@
-
 package jsat.distributions;
 
 import jsat.linear.Vec;
@@ -10,7 +9,6 @@ import java.util.Random;
 import static jsat.math.SpecialMath.*;
 
 import jsat.text.GreekLetters;
-
 
 /**
  * @author Edward Raff

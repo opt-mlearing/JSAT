@@ -1,4 +1,3 @@
-
 package jsat.classifiers;
 
 import java.util.*;
@@ -6,7 +5,6 @@ import java.util.*;
 import jsat.DataSet;
 import jsat.DataStore;
 import jsat.linear.DenseVector;
-import jsat.linear.IndexValue;
 import jsat.linear.Vec;
 import jsat.utils.IntList;
 import jsat.utils.ListUtils;

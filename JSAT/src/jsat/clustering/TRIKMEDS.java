@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2018 Edward Raff
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package jsat.clustering;
 
 import java.util.ArrayList;
@@ -94,8 +77,7 @@ public class TRIKMEDS extends PAM {
             TrainableDistanceMetric.trainIfNeeded(dm, data);
             accel = dm.getAccelerationCache(X);
             selectIntialPoints(data, medioids, dm, accel, rand, seedSelection);
-        } else
-            accel = cacheAccel;
+        } else accel = cacheAccel;
 
         //N : number of training samples
         final int N = data.size();
@@ -143,8 +125,7 @@ public class TRIKMEDS extends PAM {
         // initialise //
         for (int k = 0; k < K; k++)
             m.set(k, c[k]);
-        run(parallel, N, (start, end) ->
-        {
+        run(parallel, N, (start, end) -> {
             for (int i = start; i < end; i++) {
                 double a_min_val = Double.POSITIVE_INFINITY;
                 int a_min_k = 0;
@@ -180,8 +161,7 @@ public class TRIKMEDS extends PAM {
             ///// update-medoids() //////
             boolean[] medioid_changed = new boolean[K];
             Arrays.fill(medioid_changed, false);
-            run(parallel, N, (i) ->
-            {
+            run(parallel, N, (i) -> {
                 for (int k = 0; k < K; k++) {
                     // If the bound test cannot exclude i asm(k)
                     if (ls.get(i) < s.get(k)) {
@@ -222,8 +202,7 @@ public class TRIKMEDS extends PAM {
             });
 
             // If the medoid of cluster k has changed, update cluster information
-            run(parallel, K, (k) ->
-            {
+            run(parallel, K, (k) -> {
                 if (medioid_changed[k]) {
                     p[k] = dm.dist(c[k], m.get(k), X, accel);
                     c[k] = m.get(k);
@@ -236,8 +215,7 @@ public class TRIKMEDS extends PAM {
                 delta_s_out.set(k, 0.0);
             });
             ///// assign-to-clusters()  //////
-            run(parallel, N, (i) ->
-            {
+            run(parallel, N, (i) -> {
                 // Update lower bounds on distances to medoids based on distances moved by medoids
                 for (int k = 0; k < K; k++)
                     lc[i][k] -= p[k];
@@ -280,8 +258,7 @@ public class TRIKMEDS extends PAM {
                 J_abs_n[k] = delta_n_in.get(k) + delta_n_out.get(k);
                 J_net_n[k] = delta_n_in.get(k) - delta_n_out.get(k);
             }
-            run(parallel, N, (start, end) ->
-            {
+            run(parallel, N, (start, end) -> {
                 for (int i = start; i < end; i++) {
                     double ls_i_delta = 0;
                     for (int k = 0; k < K; k++)
@@ -289,8 +266,7 @@ public class TRIKMEDS extends PAM {
                     ls.getAndAdd(i, ls_i_delta);
                 }
             });
-        }
-        while (changes.sum() > 0 && iter++ < iterLimit);
+        } while (changes.sum() > 0 && iter++ < iterLimit);
 
         return streamP(DoubleStream.of(d), parallel).map(x -> x * x).sum();
     }
@@ -329,8 +305,7 @@ public class TRIKMEDS extends PAM {
         IntList rand_order = new IntList(indecies);
         Collections.shuffle(rand_order, RandomUtil.getRandom());
         ThreadLocal<double[]> d_local = ThreadLocal.withInitial(() -> new double[N]);
-        ParallelUtils.streamP(rand_order.streamInts(), parallel).forEach(i ->
-        {
+        ParallelUtils.streamP(rand_order.streamInts(), parallel).forEach(i -> {
             double[] d = d_local.get();
             double d_avg = 0;
             if (l.get(i) < e_cl.get()) {

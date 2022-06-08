@@ -1,4 +1,3 @@
-
 package jsat.clustering;
 
 import jsat.linear.distancemetrics.TrainableDistanceMetric;
@@ -95,8 +94,7 @@ public class PAM implements KClusterer {
         this.dm = toCopy.dm.clone();
         this.rand = RandomUtil.getRandom();
         this.seedSelection = toCopy.seedSelection;
-        if (toCopy.medoids != null)
-            this.medoids = Arrays.copyOf(toCopy.medoids, toCopy.medoids.length);
+        if (toCopy.medoids != null) this.medoids = Arrays.copyOf(toCopy.medoids, toCopy.medoids.length);
         this.storeMedoids = toCopy.storeMedoids;
         this.iterLimit = toCopy.iterLimit;
     }
@@ -164,16 +162,14 @@ public class PAM implements KClusterer {
             TrainableDistanceMetric.trainIfNeeded(dm, data);
             accel = dm.getAccelerationCache(X);
             selectIntialPoints(data, medioids, dm, accel, rand, seedSelection);
-        } else
-            accel = cacheAccel;
+        } else accel = cacheAccel;
 
         int iter = 0;
         do {
             changes.reset();
             totalDistance.reset();
 
-            ParallelUtils.run(parallel, data.size(), (start, end) ->
-            {
+            ParallelUtils.run(parallel, data.size(), (start, end) -> {
                 for (int i = start; i < end; i++) {
                     int assignment = 0;
                     double minDist = dm.dist(medioids[0], i, X, accel);
@@ -204,10 +200,7 @@ public class PAM implements KClusterer {
                 final int medCandadate = i;
 
                 final int ii = i;
-                thisCandidateDistance = ParallelUtils.range(data.size(), parallel)
-                        .filter(j -> j != ii && assignments[j] == clusterID)
-                        .mapToDouble(j -> Math.pow(dm.dist(medCandadate, j, X, accel), 2))
-                        .sum();
+                thisCandidateDistance = ParallelUtils.range(data.size(), parallel).filter(j -> j != ii && assignments[j] == clusterID).mapToDouble(j -> Math.pow(dm.dist(medCandadate, j, X, accel), 2)).sum();
 
                 if (thisCandidateDistance < bestMedCandDist[clusterID]) {
                     bestMedCand[clusterID] = i;
@@ -215,8 +208,7 @@ public class PAM implements KClusterer {
                 }
             }
             System.arraycopy(bestMedCand, 0, medioids, 0, medioids.length);
-        }
-        while (changes.sum() > 0 && iter++ < iterLimit);
+        } while (changes.sum() > 0 && iter++ < iterLimit);
 
         return totalDistance.sum();
     }
@@ -228,14 +220,12 @@ public class PAM implements KClusterer {
 
     @Override
     public int[] cluster(DataSet dataSet, int clusters, boolean parallel, int[] designations) {
-        if (designations == null)
-            designations = new int[dataSet.size()];
+        if (designations == null) designations = new int[dataSet.size()];
         medoids = new int[clusters];
 
         cluster(dataSet, true, medoids, designations, null, parallel);
 
-        if (!storeMedoids)
-            medoids = null;
+        if (!storeMedoids) medoids = null;
 
         return designations;
     }
@@ -247,8 +237,7 @@ public class PAM implements KClusterer {
 
     @Override
     public int[] cluster(DataSet dataSet, int lowK, int highK, boolean parallel, int[] designations) {
-        if (designations == null)
-            designations = new int[dataSet.size()];
+        if (designations == null) designations = new int[dataSet.size()];
 
         double[] totDistances = new double[highK - lowK + 1];
 
@@ -274,8 +263,7 @@ public class PAM implements KClusterer {
             }
         }
 
-        if (maxChange < stats.getStandardDeviation() * 2 + stats.getMean())
-            maxChangeK = lowK;
+        if (maxChange < stats.getStandardDeviation() * 2 + stats.getMean()) maxChangeK = lowK;
 
         return cluster(dataSet, maxChangeK, parallel, designations);
     }
@@ -312,10 +300,7 @@ public class PAM implements KClusterer {
             double thisCandidateDistance;
             final int medCandadate = i;
 
-            thisCandidateDistance = ParallelUtils.range(indecies.size(), parallel)
-                    .filter(j -> j != i)
-                    .mapToDouble(j -> dm.dist(medCandadate, j, X, accel))
-                    .sum();
+            thisCandidateDistance = ParallelUtils.range(indecies.size(), parallel).filter(j -> j != i).mapToDouble(j -> dm.dist(medCandadate, j, X, accel)).sum();
 
             if (thisCandidateDistance < bestDist) {
                 bestIndex = i;

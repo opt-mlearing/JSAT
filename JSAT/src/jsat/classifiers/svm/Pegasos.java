@@ -1,18 +1,15 @@
 package jsat.classifiers.svm;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 import jsat.DataSet;
 import jsat.SingleWeightVectorModel;
 import jsat.classifiers.*;
 import jsat.classifiers.calibration.BinaryScoreClassifier;
 import jsat.distributions.Distribution;
-import jsat.distributions.Gamma;
 import jsat.distributions.LogUniform;
 import jsat.exceptions.FailedToFitException;
 import jsat.linear.*;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameterized;
 import jsat.utils.IntList;
 import jsat.utils.ListUtils;

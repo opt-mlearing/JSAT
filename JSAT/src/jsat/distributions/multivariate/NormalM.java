@@ -1,4 +1,3 @@
-
 package jsat.distributions.multivariate;
 
 import java.util.ArrayList;

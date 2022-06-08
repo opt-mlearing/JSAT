@@ -1,11 +1,9 @@
-
 package jsat.distributions.multivariate;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
 
-import jsat.classifiers.DataPoint;
 import jsat.distributions.Gamma;
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;

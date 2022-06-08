@@ -1,4 +1,3 @@
-
 package jsat.classifiers.svm;
 
 import java.io.Serializable;

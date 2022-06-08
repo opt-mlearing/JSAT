@@ -1,6 +1,3 @@
-/*
- * This code was contributed under the public domain.
- */
 package jsat.clustering.biclustering;
 
 import java.util.HashMap;

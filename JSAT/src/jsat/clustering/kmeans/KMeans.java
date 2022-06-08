@@ -1,16 +1,11 @@
-
 package jsat.clustering.kmeans;
 
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jsat.DataSet;
 import jsat.classifiers.DataPoint;
 import jsat.clustering.ClusterFailureException;
 import jsat.clustering.KClustererBase;
-import jsat.clustering.PAM;
 import jsat.clustering.SeedSelectionMethods;
 import jsat.clustering.SeedSelectionMethods.SeedSelection;
 import jsat.linear.Vec;
@@ -18,7 +13,6 @@ import jsat.linear.distancemetrics.DistanceMetric;
 import jsat.math.OnLineStatistics;
 import jsat.parameters.Parameter.ParameterHolder;
 import jsat.parameters.*;
-import jsat.utils.SystemInfo;
 import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.utils.random.RandomUtil;
 

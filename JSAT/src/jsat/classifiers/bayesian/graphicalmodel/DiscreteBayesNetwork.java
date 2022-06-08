@@ -1,10 +1,8 @@
-
 package jsat.classifiers.bayesian.graphicalmodel;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import jsat.classifiers.CategoricalData;
 import jsat.classifiers.CategoricalResults;

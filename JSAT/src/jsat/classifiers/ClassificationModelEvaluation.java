@@ -1,19 +1,14 @@
-
 package jsat.classifiers;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jsat.DataSet;
 import jsat.classifiers.evaluation.ClassificationScore;
 import jsat.datatransform.DataTransformProcess;
 import jsat.exceptions.UntrainedModelException;
 import jsat.math.OnLineStatistics;
-import jsat.utils.SystemInfo;
 import jsat.utils.concurrent.ParallelUtils;
 import jsat.utils.random.RandomUtil;
 
@@ -225,8 +220,7 @@ public class ClassificationModelEvaluation {
         confusionMatrix = new double[numOfClasses][numOfClasses];
         totalTrainingTime = 0;
         totalClassificationTime = 0;
-        if (keepModels)
-            keptModels = new Classifier[lcds.size()];
+        if (keepModels) keptModels = new Classifier[lcds.size()];
 
         setUpResults(dataSet.size());
         int end = dataSet.size();
@@ -250,8 +244,7 @@ public class ClassificationModelEvaluation {
      * @param testSet the data set to perform testing on
      */
     public void evaluateTestSet(ClassificationDataSet testSet) {
-        if (keepModels)
-            keptModels = new Classifier[1];
+        if (keepModels) keptModels = new Classifier[1];
         int numOfClasses = dataSet.getClassSize();
         sumOfWeights = 0.0;
         confusionMatrix = new double[numOfClasses][numOfClasses];
@@ -280,8 +273,7 @@ public class ClassificationModelEvaluation {
         }
         totalTrainingTime += (System.currentTimeMillis() - startTrain);
 
-        if (keptModels != null)
-            keptModels[index] = classifierToUse;
+        if (keptModels != null) keptModels[index] = classifierToUse;
 
         CountDownLatch latch;
         final double[] evalErrorStats = new double[2];//first index is correct, 2nd is total
@@ -293,8 +285,7 @@ public class ClassificationModelEvaluation {
             scoresToUpdate.put(score, score);
         }
 
-        ParallelUtils.run(parallel, testSet.size(), (start, end) ->
-        {
+        ParallelUtils.run(parallel, testSet.size(), (start, end) -> {
             //create a local set of scores to update
             double localCorrect = 0;
             double localSumOfWeights = 0;
@@ -322,8 +313,7 @@ public class ClassificationModelEvaluation {
                 synchronized (confusionMatrix[trueCat]) {
                     confusionMatrix[trueCat][result.mostLikely()] += w_i;
                 }
-                if (trueCat == result.mostLikely())
-                    localCorrect += w_i;
+                if (trueCat == result.mostLikely()) localCorrect += w_i;
                 localSumOfWeights += w_i;
             }
 

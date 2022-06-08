@@ -1,4 +1,3 @@
-
 package jsat.linear.solvers;
 
 import jsat.linear.DenseVector;

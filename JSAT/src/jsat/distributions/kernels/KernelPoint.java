@@ -11,7 +11,6 @@ import java.util.Random;
 import jsat.classifiers.linear.kernelized.Projectron;
 import jsat.linear.*;
 import jsat.math.FastMath;
-import jsat.math.Function;
 import jsat.math.Function1D;
 import jsat.math.optimization.GoldenSearch;
 import jsat.regression.KernelRLS;

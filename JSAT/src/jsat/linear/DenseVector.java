@@ -1,4 +1,3 @@
-
 package jsat.linear;
 
 import java.io.IOException;

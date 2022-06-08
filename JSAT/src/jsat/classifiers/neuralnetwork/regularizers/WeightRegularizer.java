@@ -1,4 +1,3 @@
-
 package jsat.classifiers.neuralnetwork.regularizers;
 
 import java.io.Serializable;

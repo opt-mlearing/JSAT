@@ -1,4 +1,3 @@
-
 package jsat.classifiers.neuralnetwork;
 
 import static java.lang.Math.max;

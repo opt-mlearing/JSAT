@@ -1,4 +1,3 @@
-
 package jsat.linear.vectorcollection;
 
 import java.util.List;

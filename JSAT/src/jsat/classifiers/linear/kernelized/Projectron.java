@@ -18,7 +18,6 @@ import jsat.linear.DenseVector;
 import jsat.linear.Matrix;
 import jsat.linear.SubMatrix;
 import jsat.linear.Vec;
-import jsat.parameters.Parameter;
 import jsat.parameters.Parameter.ParameterHolder;
 import jsat.parameters.Parameterized;
 import jsat.utils.DoubleList;

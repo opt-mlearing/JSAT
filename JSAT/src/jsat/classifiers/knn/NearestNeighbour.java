@@ -1,4 +1,3 @@
-
 package jsat.classifiers.knn;
 
 import java.util.*;

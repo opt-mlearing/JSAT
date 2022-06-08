@@ -1,4 +1,3 @@
-
 package jsat.clustering.evaluation;
 
 import jsat.DataSet;

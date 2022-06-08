@@ -1,30 +1,10 @@
-/*
- * Copyright (C) 2016 Edward Raff <Raff.Edward@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package jsat.clustering.hierarchical;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jsat.DataSet;
 import jsat.classifiers.DataPoint;
@@ -32,14 +12,12 @@ import jsat.classifiers.DataPoint;
 import static jsat.clustering.ClustererBase.createClusterListFromAssignmentArray;
 
 import jsat.clustering.KClusterer;
-import jsat.clustering.KClustererBase;
 import jsat.clustering.dissimilarity.LanceWilliamsDissimilarity;
 import jsat.clustering.dissimilarity.WardsDissimilarity;
 import jsat.linear.Vec;
 import jsat.linear.distancemetrics.DistanceMetric;
 import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.math.OnLineStatistics;
-import jsat.utils.FakeExecutor;
 import jsat.utils.IndexTable;
 import jsat.utils.IntDoubleMap;
 import jsat.utils.IntDoubleMapArray;
@@ -119,8 +97,7 @@ public class NNChainHAC implements KClusterer {
     protected NNChainHAC(NNChainHAC toCopy) {
         this.distMeasure = toCopy.distMeasure.clone();
         this.dm = toCopy.dm.clone();
-        if (toCopy.merges != null)
-            this.merges = Arrays.copyOf(toCopy.merges, toCopy.merges.length);
+        if (toCopy.merges != null) this.merges = Arrays.copyOf(toCopy.merges, toCopy.merges.length);
     }
 
     @Override
@@ -134,18 +111,15 @@ public class NNChainHAC implements KClusterer {
     }
 
     private double getDist(int a, int j, int[] size, List<Vec> vecs, List<Double> cache, List<Map<Integer, Double>> d_xk) {
-        if (size[j] == 1 && size[a] == 1)
-            return dm.dist(a, j, vecs, cache);
+        if (size[j] == 1 && size[a] == 1) return dm.dist(a, j, vecs, cache);
         else {
             //a is the one we are using over and over, its more likely to have the valu - check it first
             if (d_xk.get(a) != null) {
                 Double tmp = d_xk.get(a).get(j);
-                if (tmp != null)
-                    return tmp;
+                if (tmp != null) return tmp;
                 else//wasn't found searching d_xk
                     return d_xk.get(j).get(a);//has to be found now
-            } else
-                return d_xk.get(j).get(a);//has to be found now
+            } else return d_xk.get(j).get(a);//has to be found now
         }
     }
 
@@ -159,8 +133,7 @@ public class NNChainHAC implements KClusterer {
      * @see #hasStoredClustering()
      */
     public int[] getClusterDesignations(int[] designations, int clusters) {
-        if (merges == null)
-            return null;
+        if (merges == null) return null;
         return PriorityHAC.assignClusterDesignations(designations, clusters, merges);
     }
 
@@ -175,8 +148,7 @@ public class NNChainHAC implements KClusterer {
      * @see #hasStoredClustering()
      */
     public List<List<DataPoint>> getClusterDesignations(int clusters, DataSet data) {
-        if (merges == null || (merges.length + 2) / 2 != data.size())
-            return null;
+        if (merges == null || (merges.length + 2) / 2 != data.size()) return null;
         int[] assignments = new int[data.size()];
         assignments = getClusterDesignations(assignments, clusters);
         return createClusterListFromAssignmentArray(assignments, data);
@@ -189,8 +161,7 @@ public class NNChainHAC implements KClusterer {
 
     @Override
     public int[] cluster(DataSet dataSet, int lowK, int highK, boolean parallel, int[] designations) {
-        if (designations == null)
-            designations = new int[dataSet.size()];
+        if (designations == null) designations = new int[dataSet.size()];
 
         final int N = dataSet.size();
 
@@ -263,16 +234,14 @@ public class NNChainHAC implements KClusterer {
                 final int c_ = c.get();
                 boolean doPara = parallel && S.size() > SystemInfo.LogicalCores * 2 && S.size() >= 100;
 
-                ParallelUtils.run(doPara, S.size(), (start, end) ->
-                {
+                ParallelUtils.run(doPara, S.size(), (start, end) -> {
                     double local_minDist = Double.POSITIVE_INFINITY;
                     int local_c = S.get(start);
 
 
                     for (int i = start; i < end; i++) {
                         int j = S.getI(i);
-                        if (j == a_ || j == c_)
-                            continue;//we already have these guys! just not removed from S yet
+                        if (j == a_ || j == c_) continue;//we already have these guys! just not removed from S yet
                         double dist = getDist(a_, j, size, vecs, cache, dist_map);
 
                         if (dist < local_minDist) {
@@ -297,8 +266,7 @@ public class NNChainHAC implements KClusterer {
                 //18: Append a to chain
                 chain[chainPos++] = a;
 
-            }
-            while (chainPos < 3 || a != chain[chainPos - 3]); //19: until length(chain) ≥ 3 and a = chain[−3]  > a, b are reciprocal
+            } while (chainPos < 3 || a != chain[chainPos - 3]); //19: until length(chain) ≥ 3 and a = chain[−3]  > a, b are reciprocal
 
             final int n = Math.min(a, b);
             final int removed = Math.max(a, b);
@@ -316,8 +284,7 @@ public class NNChainHAC implements KClusterer {
             // 22: n←(new node label)
 
             for (int i = Math.max(0, chainPos - 5); i < chainPos; i++)//bug in paper? we end with [a, b, a] in the chain, but one of them is a bad index now
-                if (chain[i] == removed)
-                    chain[i] = n;
+                if (chain[i] == removed) chain[i] = n;
             // 23: size[n]←size[a]+size[b]
             final int size_a = size[a], size_b = size[b];
             //set defered till later to make sure we don't muck anything needed in computatoin
@@ -326,8 +293,7 @@ public class NNChainHAC implements KClusterer {
 
             boolean singleThread = !parallel || S.size() <= SystemInfo.LogicalCores * 10;
             final Map<Integer, Double> map_n; // = S.isEmpty() ? null : new IntDoubleMap(S.size());
-            if (S.isEmpty())
-                map_n = null;
+            if (S.isEmpty()) map_n = null;
             else if (S.size() * 100 >= N || !singleThread)// Wastefull, but faster and acceptable
                 map_n = new IntDoubleMapArray(N);
             else {
@@ -341,8 +307,7 @@ public class NNChainHAC implements KClusterer {
             final int a_ = a;
             final int b_ = b;
             final double dist_ab_ = dist_ab;
-            ParallelUtils.streamP(S.streamInts(), !singleThread).forEach(x ->
-            {
+            ParallelUtils.streamP(S.streamInts(), !singleThread).forEach(x -> {
                 double d_ax = getDist(a_, x, size, vecs, cache, dist_map);
                 double d_bx = getDist(b_, x, size, vecs, cache, dist_map);
                 double d_xn = distMeasure.dissimilarity(size_a, size_b, size[x], dist_ab_, d_ax, d_bx);

@@ -1,4 +1,3 @@
-
 package jsat.distributions.multivariate;
 
 import static java.lang.Math.*;

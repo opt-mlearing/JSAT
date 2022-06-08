@@ -1,4 +1,3 @@
-
 package jsat.clustering.dissimilarity;
 
 import static java.lang.Math.abs;

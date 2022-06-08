@@ -1,4 +1,3 @@
-
 package jsat.distributions.kernels;
 
 import java.util.List;

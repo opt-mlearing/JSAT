@@ -1,4 +1,3 @@
-
 package jsat.distributions;
 
 import static java.lang.Math.*;

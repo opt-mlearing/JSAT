@@ -1,4 +1,3 @@
-
 package jsat.classifiers.bayesian.graphicalmodel;
 
 import java.util.Collection;
