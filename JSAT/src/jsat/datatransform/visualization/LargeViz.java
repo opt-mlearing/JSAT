@@ -19,6 +19,7 @@ package jsat.datatransform.visualization;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
+
 import jsat.DataSet;
 import jsat.classifiers.DataPoint;
 import jsat.datatransform.DataTransform;
@@ -49,26 +50,26 @@ import jsat.utils.random.RandomUtil;
  * Conference on World Wide Web (pp. 287–297). Republic and Canton of Geneva,
  * Switzerland: International World Wide Web Conferences Steering Committee.
  * doi:10.1145/2872427.2883041
+ *
  * @author Edward Raff
  */
-public class LargeViz implements VisualizationTransform
-{
+public class LargeViz implements VisualizationTransform {
     private DistanceMetric dm_source = new EuclideanDistance();
     private DistanceMetric dm_embed = new EuclideanDistance();
     private double perplexity = 50;
     private int dt = 2;
-    
+
     /**
      * This is the number of negative samples to take for each vertex <br>
      * "number of negative samples is set as 5"
      */
     private int M = 5;
-    
+
     /**
      * "γ is set as 7 by default"
      */
     private double gamma = 7;
-    
+
     /**
      * Sets the target perplexity of the gaussian used over each data point. The
      * perplexity can be thought of as a quasi desired number of nearest
@@ -79,42 +80,37 @@ public class LargeViz implements VisualizationTransform
      *
      * @param perplexity the quasi number of neighbors to consider for each data point
      */
-    public void setPerplexity(double perplexity)
-    {
-        if(perplexity <= 0 || Double.isNaN(perplexity) || Double.isInfinite(perplexity))
+    public void setPerplexity(double perplexity) {
+        if (perplexity <= 0 || Double.isNaN(perplexity) || Double.isInfinite(perplexity))
             throw new IllegalArgumentException("perplexity must be positive, not " + perplexity);
         this.perplexity = perplexity;
     }
 
     /**
-     * 
      * @return the target perplexity to use for each data point
      */
-    public double getPerplexity()
-    {
+    public double getPerplexity() {
         return perplexity;
     }
 
     /**
-     * Sets the distance metric to use for the original space. This will 
-     * determine the target nearest neighbors  to keep close to each other in 
+     * Sets the distance metric to use for the original space. This will
+     * determine the target nearest neighbors  to keep close to each other in
      * the embedding space
-     * 
+     *
      * @param dm the distance metric to use
      */
-    public void setDistanceMetricSource(DistanceMetric dm)
-    {
+    public void setDistanceMetricSource(DistanceMetric dm) {
         this.dm_source = dm;
     }
-    
+
     /**
-     * Sets the distance metric to use for the embedded space. This will 
-     * determine the actual nearest neighbors as the occur in the embedded space. 
-     * 
+     * Sets the distance metric to use for the embedded space. This will
+     * determine the actual nearest neighbors as the occur in the embedded space.
+     *
      * @param dm the distance metric to use
      */
-    public void setDistanceMetricEmbedding(DistanceMetric dm)
-    {
+    public void setDistanceMetricEmbedding(DistanceMetric dm) {
         this.dm_embed = dm;
     }
 
@@ -124,19 +120,16 @@ public class LargeViz implements VisualizationTransform
      *
      * @param M the number of negative samples to use for each update
      */
-    public void setNegativeSamples(int M)
-    {
-        if(M < 1)
+    public void setNegativeSamples(int M) {
+        if (M < 1)
             throw new IllegalArgumentException("Number of negative samples must be positive, not " + M);
         this.M = M;
     }
 
     /**
-     * 
      * @return the number of negative samples to use for each update
      */
-    public int getNegativeSamples()
-    {
+    public int getNegativeSamples() {
         return M;
     }
 
@@ -148,43 +141,37 @@ public class LargeViz implements VisualizationTransform
      *
      * @param gamma the weight for negative edge samples
      */
-    public void setGamma(double gamma)
-    {
-        if(Double.isInfinite(gamma) || Double.isNaN(gamma) || gamma <= 0)
+    public void setGamma(double gamma) {
+        if (Double.isInfinite(gamma) || Double.isNaN(gamma) || gamma <= 0)
             throw new IllegalArgumentException("Gamma must be positive, not " + gamma);
         this.gamma = gamma;
     }
 
     /**
-     * 
      * @return the weight for negative edge samples
      */
-    public double getGamma()
-    {
+    public double getGamma() {
         return gamma;
     }
 
     @Override
-    public int getTargetDimension()
-    {
+    public int getTargetDimension() {
         return dt;
     }
 
     @Override
-    public boolean setTargetDimension(int target)
-    {
-        if(target < 2)
+    public boolean setTargetDimension(int target) {
+        if (target < 2)
             return false;
         dt = target;
         return true;
     }
 
     @Override
-    public <Type extends DataSet> Type transform(DataSet<Type> d, boolean parallel)
-    {
+    public <Type extends DataSet> Type transform(DataSet<Type> d, boolean parallel) {
         Random rand = RandomUtil.getRandom();
         final ThreadLocal<Random> local_rand = ThreadLocal.withInitial(RandomUtil::getRandom);
-        
+
         final int N = d.size();
         //If perp set too big, the search size would be larger than the dataset size. So min to N
         /**
@@ -192,103 +179,102 @@ public class LargeViz implements VisualizationTransform
          * floor(3u) nearest neighbors of each of the N input objects (recall
          * that u is the perplexity of the conditional distributions)"
          */
-        final int knn = (int) Math.min(Math.floor(3*perplexity), N-1);
-        
+        final int knn = (int) Math.min(Math.floor(3 * perplexity), N - 1);
+
         /**
          * P_ij does not change at this point, so lets compute these values only
          * once please! j index matches up to the value stored in nearMe. 
          * Would be W_ij in notation of LargeViz paper, but P_ij form TSNE paper
          */
         final double[][] nearMePij = new double[N][knn];
-        
+
         /**
          * Each row is the set of 3*u indices returned by the NN search
          */
         final int[][] nearMe = new int[N][knn];
-        
+
         TSNE.computeP(d, parallel, rand, knn, nearMe, nearMePij, dm_source, perplexity);
-        
+
         final double[][] nearMeSample = new double[N][knn];
-        
+
         /**
          * Array of the sample weights used to perform the negative sampling. 
-         * 
+         *
          * Initial value is out-degree defined in LINE paper, section 4.1.2. 
          */
         final double[] negSampleWeight = new double[N];
-        
+
         double negSum = 0;
-        for(int i = 0; i < N; i++)
-        {
+        for (int i = 0; i < N; i++) {
             double sum = DenseVector.toDenseVec(nearMePij[i]).sum();
-            sum += nearMePij[i].length*Double.MIN_VALUE;
+            sum += nearMePij[i].length * Double.MIN_VALUE;
             negSampleWeight[i] = sum;
-            
+
             nearMeSample[i][0] = nearMePij[i][0];
-            for(int j = 1; j < knn; j++)//make cumulative
-                nearMeSample[i][j] = Math.ulp(nearMePij[i][j]) + nearMePij[i][j] + nearMeSample[i][j-1];
-            for(int j = 1; j < knn; j++)//normalize
+            for (int j = 1; j < knn; j++)//make cumulative
+                nearMeSample[i][j] = Math.ulp(nearMePij[i][j]) + nearMePij[i][j] + nearMeSample[i][j - 1];
+            for (int j = 1; j < knn; j++)//normalize
                 nearMeSample[i][j] /= sum;
             negSampleWeight[i] = Math.pow(negSampleWeight[i], 0.75);
             negSum += negSampleWeight[i];
-            if(i > 0)
-                negSampleWeight[i] += negSampleWeight[i-1];
+            if (i > 0)
+                negSampleWeight[i] += negSampleWeight[i - 1];
         }
         //normalize to [0, 1] range
-        for(int i = 0; i < N; i++)
-            negSampleWeight[i]/= negSum;
-        
+        for (int i = 0; i < N; i++)
+            negSampleWeight[i] /= negSum;
+
         final List<Vec> embeded = new ArrayList<>();
-        Uniform initDistribution = new Uniform(-0.00005/dt, 0.00005/dt);
-        for(int i = 0; i < N; i++)
+        Uniform initDistribution = new Uniform(-0.00005 / dt, 0.00005 / dt);
+        for (int i = 0; i < N; i++)
             embeded.add(initDistribution.sampleVec(dt, rand));
-        
+
         /**
          * Number of threads to use. Paper suggests asynch updates and just
          * ignore unsafe alters b/c diff should be minor. Adding some extra
          * logic so that we have at least a good handful of points per thread to
          * avoid excessive edits on small datasets.
          */
-        final int threads_to_use = Math.max(Math.min(N/(200*M), SystemInfo.LogicalCores), 1);
-        
+        final int threads_to_use = Math.max(Math.min(N / (200 * M), SystemInfo.LogicalCores), 1);
+
         final CountDownLatch latch = new CountDownLatch(threads_to_use);
-        
+
         /*
-         * Objective is 
+         * Objective is
          *  w*(log(1/(1+g(x)^2)) + y log(1−1/(1+g(x)^2 )))
          * where g(x) is the euclidean distance adn G(x) is g(x)^2
-        
+
          * d/x of ||x-y||   =   (x-y)/||x-y||
          * d/y of ||x-y||   =  -(x-y)/||x-y||
-        
-         * left hand side derivative of log(1/(1+g(x))) = 
+
+         * left hand side derivative of log(1/(1+g(x))) =
          * = -(2 g(x) g'(x))/(g(x)^2+1)
          * = -(2 ||x-y|| (x-y)/||x-y||)/(||x-y||^2+1)
          * = -(2 (x-y))/(||x-y||^2+1)
-         * for d/y 
+         * for d/y
          * = -(2 (y-x))/(||x-y||^2+1)
          *
-         * Right hand side portion 
+         * Right hand side portion
          * derivative of z* log(1-1/(1+g(x)^2))
          * =  (2 z g'(x))/(g(x) (g(x)^2+1))
          * =  (2 z (x-y))/(||x-y||^2 (||x-y||^2+1))
          * or for d/y
          * =  (2 z (y-x))/(||x-y||^2 (||x-y||^2+1))
-        
-         * NOTE: My derivative dosn't work. But adding 
-         * an extra multiplication by ||x-y|| seems to fix everything? Want to 
-         * come back and figure this out better. 
-         */
-        
-        final double eta_0 = 1.0;
-        final long iterations = 1000L*N;
-        final ThreadLocal<Vec> local_grad_i = ThreadLocal.withInitial(()->new DenseVector(dt));
-        final ThreadLocal<Vec> local_grad_j = ThreadLocal.withInitial(()->new DenseVector(dt));
-        final ThreadLocal<Vec> local_grad_k = ThreadLocal.withInitial(()->new DenseVector(dt));
 
-        
+         * NOTE: My derivative dosn't work. But adding
+         * an extra multiplication by ||x-y|| seems to fix everything? Want to
+         * come back and figure this out better.
+         */
+
+        final double eta_0 = 1.0;
+        final long iterations = 1000L * N;
+        final ThreadLocal<Vec> local_grad_i = ThreadLocal.withInitial(() -> new DenseVector(dt));
+        final ThreadLocal<Vec> local_grad_j = ThreadLocal.withInitial(() -> new DenseVector(dt));
+        final ThreadLocal<Vec> local_grad_k = ThreadLocal.withInitial(() -> new DenseVector(dt));
+
+
         AtomicLong curIteration = new AtomicLong();
-        ParallelUtils.run(parallel, N, (start, end)->
+        ParallelUtils.run(parallel, N, (start, end) ->
         {
             Random l_rand = local_rand.get();
             //b/c indicies are selected at random everyone can use same iterator order
@@ -296,10 +282,9 @@ public class LargeViz implements VisualizationTransform
             //eta has the same range and effect in aggregate
             //To avoid issues with large datests, we want 1000 * N iterations
             //so do an iteration of our N/P 1000 times to get the correct amount 
-            for(int moreTimes = 0; moreTimes < 1000; moreTimes++)
-                for(int iter = start; iter < end; iter++ )
-                {
-                    double eta = eta_0*(1-curIteration.getAndIncrement()/(double)iterations);
+            for (int moreTimes = 0; moreTimes < 1000; moreTimes++)
+                for (int iter = start; iter < end; iter++) {
+                    double eta = eta_0 * (1 - curIteration.getAndIncrement() / (double) iterations);
                     eta = Math.max(eta, 0.0001);
 
                     int i = l_rand.nextInt(N);
@@ -307,7 +292,7 @@ public class LargeViz implements VisualizationTransform
                     int j = Arrays.binarySearch(nearMeSample[i], l_rand.nextDouble());
                     if (j < 0)
                         j = -(j) - 1;
-                    if(j >= knn)///oops. Can be hard to sample / happen with lots of near by near 0 dists
+                    if (j >= knn)///oops. Can be hard to sample / happen with lots of near by near 0 dists
                     {
                         //lets fall back to picking someone at random
                         j = l_rand.nextInt(knn);
@@ -318,8 +303,8 @@ public class LargeViz implements VisualizationTransform
                     Vec y_j = embeded.get(j);
                     //right hand side update for the postive sample
                     final double dist_ij = dm_embed.dist(i, j, embeded, null);
-                    final double dist_ij_sqrd = dist_ij*dist_ij;
-                    if(dist_ij <= 0 )
+                    final double dist_ij_sqrd = dist_ij * dist_ij;
+                    if (dist_ij <= 0)
                         continue;//how did that happen?
 
                     Vec grad_i = local_grad_i.get();
@@ -327,46 +312,43 @@ public class LargeViz implements VisualizationTransform
                     Vec grad_k = local_grad_k.get();
                     y_i.copyTo(grad_j);
                     grad_j.mutableSubtract(y_j);
-                    grad_j.mutableMultiply(-2*dist_ij/(dist_ij_sqrd+1));
+                    grad_j.mutableMultiply(-2 * dist_ij / (dist_ij_sqrd + 1));
 
 
                     grad_j.copyTo(grad_i);
 
                     //negative sampling time
-                    for(int k = 0; k < M; k++)
-                    {
+                    for (int k = 0; k < M; k++) {
                         int jk = -1;
-                        do
-                        {
+                        do {
                             jk = Arrays.binarySearch(negSampleWeight, l_rand.nextDouble());
                             if (jk < 0)
                                 jk = -(jk) - 1;
 
-                            if(jk  == i || jk == j)
-                                jk  = -1;
+                            if (jk == i || jk == j)
+                                jk = -1;
 
                             //code to reject neighbors for sampling if too close
                             //Not sure if this code helps or hurts... not mentioned in paper
-                            for(int search = 0; search < nearMe[i].length; search++)
-                                if(nearMe[i][search] == jk && nearMeSample[i][search] < 0.98)
-                                {
+                            for (int search = 0; search < nearMe[i].length; search++)
+                                if (nearMe[i][search] == jk && nearMeSample[i][search] < 0.98) {
                                     jk = -1;//too close to me!
                                     break;
                                 }
                         }
-                        while(jk < 0);
+                        while (jk < 0);
                         //(2 z (y-x))/(||x-y||^2 (||x-y||^2+1))
 
 
                         Vec y_k = embeded.get(jk);
                         final double dist_ik = dm_embed.dist(i, jk, embeded, null);//dist(y_i, y_k);
-                        final double dist_ik_sqrd = dist_ik*dist_ik;
+                        final double dist_ik_sqrd = dist_ik * dist_ik;
                         if (dist_ik < 1e-12)
-                            continue; 
+                            continue;
 
                         y_i.copyTo(grad_k);
                         grad_k.mutableSubtract(y_k);
-                        grad_k.mutableMultiply(2*gamma/(dist_ik*(dist_ik_sqrd+1)));
+                        grad_k.mutableMultiply(2 * gamma / (dist_ik * (dist_ik_sqrd + 1)));
 
                         grad_i.mutableAdd(grad_k);
 
@@ -374,41 +356,37 @@ public class LargeViz implements VisualizationTransform
 
                     }
 
-                    y_i.mutableAdd( eta, grad_i);
+                    y_i.mutableAdd(eta, grad_i);
                     y_j.mutableAdd(-eta, grad_j);
                 }
         });
-        
+
         DataSet<Type> toRet = d.shallowClone();
-        
+
         final IdentityHashMap<DataPoint, Integer> indexMap = new IdentityHashMap<>(N);
-        for(int i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             indexMap.put(d.getDataPoint(i), i);
-        
-        toRet.applyTransform(new DataTransform()
-        {
+
+        toRet.applyTransform(new DataTransform() {
             @Override
-            public DataPoint transform(DataPoint dp)
-            {
+            public DataPoint transform(DataPoint dp) {
                 int i = indexMap.get(dp);
-                
+
                 return new DataPoint(embeded.get(i), dp.getCategoricalValues(), dp.getCategoricalData());
             }
 
             @Override
-            public void fit(DataSet data)
-            {
-                
+            public void fit(DataSet data) {
+
             }
 
             @Override
-            public DataTransform clone()
-            {
+            public DataTransform clone() {
                 return this;
             }
         });
-        
+
         return (Type) toRet;
     }
-    
+
 }

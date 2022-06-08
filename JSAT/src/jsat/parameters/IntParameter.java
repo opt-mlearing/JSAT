@@ -4,12 +4,11 @@ import jsat.DataSet;
 import jsat.distributions.Distribution;
 
 /**
- * An integer parameter that may be altered. 
- * 
+ * An integer parameter that may be altered.
+ *
  * @author Edward Raff
  */
-public abstract class IntParameter extends Parameter
-{
+public abstract class IntParameter extends Parameter {
 
     private static final long serialVersionUID = -8467918069240345315L;
 
@@ -19,14 +18,15 @@ public abstract class IntParameter extends Parameter
      * @return the value for this parameter.
      */
     abstract public int getValue();
-    
+
     /**
-     * Sets the value for this parameter. 
-     * @return <tt>true</tt> if the value was set, <tt>false</tt> if the value 
-     * was invalid, and thus ignored. 
+     * Sets the value for this parameter.
+     *
+     * @return <tt>true</tt> if the value was set, <tt>false</tt> if the value
+     * was invalid, and thus ignored.
      */
     abstract public boolean setValue(int val);
-    
+
     /**
      * This method allows one to obtain a distribution that represents a
      * reasonable "guess" at the range of values that would work for this
@@ -38,18 +38,16 @@ public abstract class IntParameter extends Parameter
      * guessing is not supported.
      *
      * @param data the data with which we want a reasonable guess for this
-     * parameter
+     *             parameter
      * @return a distribution that represents a reasonable guess of a good value
      * for this parameter given the input data
      */
-    public Distribution getGuess(DataSet data)
-    {
+    public Distribution getGuess(DataSet data) {
         return null;
     }
 
     @Override
-    public String getValueString() 
-    {
+    public String getValueString() {
         return Integer.toString(getValue());
     }
 }

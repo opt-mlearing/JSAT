@@ -1,58 +1,49 @@
-
 package jsat.utils.concurrent;
 
 import java.util.concurrent.atomic.AtomicLong;
+
 import static java.lang.Double.doubleToRawLongBits;
 import static java.lang.Double.longBitsToDouble;
+
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.LongUnaryOperator;
 
 /**
- *
  * @author Edward Raff
  */
-final public class AtomicDouble 
-{
+final public class AtomicDouble {
     private final AtomicLong base;
 
-    public AtomicDouble(double value)
-    {
+    public AtomicDouble(double value) {
         base = new AtomicLong();
         set(value);
     }
-    
-    public void set(double val)
-    {
+
+    public void set(double val) {
         base.set(Double.doubleToRawLongBits(val));
     }
-    
-    public double get()
-    {
+
+    public double get() {
         return longBitsToDouble(base.get());
     }
-    
-    public double getAndAdd(double delta)
-    {
-        while(true)
-        {
+
+    public double getAndAdd(double delta) {
+        while (true) {
             double orig = get();
             double newVal = orig + delta;
-            if(compareAndSet(orig, newVal))
+            if (compareAndSet(orig, newVal))
                 return orig;
         }
     }
-    
+
     /**
      * Atomically adds the given value to the current value.
      *
      * @param delta the value to add
      * @return the updated value
      */
-    public final double addAndGet(double delta) 
-    {
-        while(true) 
-        {
+    public final double addAndGet(double delta) {
+        while (true) {
             double orig = get();
             double newVal = orig + delta;
             if (compareAndSet(orig, newVal))
@@ -69,11 +60,9 @@ final public class AtomicDouble
      * @param updateFunction a side-effect-free function
      * @return the updated value
      */
-    public final double updateAndGet(DoubleUnaryOperator updateFunction)
-    {
+    public final double updateAndGet(DoubleUnaryOperator updateFunction) {
         double prev, next;
-        do
-        {
+        do {
             prev = get();
             next = updateFunction.applyAsDouble(prev);
         }
@@ -90,18 +79,16 @@ final public class AtomicDouble
      * @param updateFunction a side-effect-free function
      * @return the previous value
      */
-    public final double getAndUpdate(DoubleUnaryOperator updateFunction)
-    {
+    public final double getAndUpdate(DoubleUnaryOperator updateFunction) {
         double prev, next;
-        do
-        {
+        do {
             prev = get();
             next = updateFunction.applyAsDouble(prev);
         }
         while (!compareAndSet(prev, next));
         return prev;
     }
-    
+
     /**
      * Atomically updates the current value with the results of
      * applying the given function to the current and given values,
@@ -111,22 +98,20 @@ final public class AtomicDouble
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
+     * @param x                   the update value
      * @param accumulatorFunction a side-effect-free function of two arguments
      * @return the previous value
      */
-    public final double getAndAccumulate(double x, DoubleBinaryOperator accumulatorFunction)
-    {
+    public final double getAndAccumulate(double x, DoubleBinaryOperator accumulatorFunction) {
         double prev, next;
-        do
-        {
+        do {
             prev = get();
             next = accumulatorFunction.applyAsDouble(prev, x);
         }
         while (!compareAndSet(prev, next));
         return prev;
     }
-    
+
     /**
      * Atomically updates the current value with the results of
      * applying the given function to the current and given values,
@@ -136,37 +121,32 @@ final public class AtomicDouble
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
+     * @param x                   the update value
      * @param accumulatorFunction a side-effect-free function of two arguments
      * @return the updated value
      */
-    public final double accumulateAndGet(double x, DoubleBinaryOperator accumulatorFunction)
-    {
+    public final double accumulateAndGet(double x, DoubleBinaryOperator accumulatorFunction) {
         double prev, next;
-        do
-        {
+        do {
             prev = get();
             next = accumulatorFunction.applyAsDouble(prev, x);
         }
         while (!compareAndSet(prev, next));
         return next;
     }
-    
-    public boolean compareAndSet(double expect, double update)
-    {
+
+    public boolean compareAndSet(double expect, double update) {
         return base.compareAndSet(doubleToRawLongBits(expect), doubleToRawLongBits(update));
     }
-    
-    public boolean weakCompareAndSet(double expect, double update)
-    {
+
+    public boolean weakCompareAndSet(double expect, double update) {
         return base.weakCompareAndSet(doubleToRawLongBits(expect), doubleToRawLongBits(update));
     }
 
     @Override
-    public String toString()
-    {
-        return ""+get();
+    public String toString() {
+        return "" + get();
     }
-    
-    
+
+
 }

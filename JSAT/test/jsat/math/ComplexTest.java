@@ -6,36 +6,32 @@ package jsat.math;
 
 import org.junit.After;
 import org.junit.AfterClass;
+
 import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
  * @author Edward Raff
  */
-public class ComplexTest
-{
+public class ComplexTest {
     Complex a, b, c, d, aClone, bClone, cClone, dClone;
-    
-    public ComplexTest()
-    {
+
+    public ComplexTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
-    
+
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
-    
+
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         a = new Complex(2, 1);
         aClone = a.clone();
         b = new Complex(3, 7);
@@ -45,18 +41,16 @@ public class ComplexTest
         d = new Complex(-5, 3);
         dClone = d.clone();
     }
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
      * Test of I method, of class Complex.
      */
     @Test
-    public void testI()
-    {
+    public void testI() {
         System.out.println("I");
         Complex result = Complex.I();
         assertEquals(0.0, result.getReal(), 0.0);
@@ -67,8 +61,7 @@ public class ComplexTest
      * Test of getReal method, of class Complex.
      */
     @Test
-    public void testGetReal()
-    {
+    public void testGetReal() {
         System.out.println("getReal");
         assertEquals(2.0, a.getReal(), 0.0);
         assertEquals(3.0, b.getReal(), 0.0);
@@ -80,8 +73,7 @@ public class ComplexTest
      * Test of getImag method, of class Complex.
      */
     @Test
-    public void testGetImag()
-    {
+    public void testGetImag() {
         System.out.println("getImag");
         assertEquals(1.0, a.getImag(), 0.0);
         assertEquals(7.0, b.getImag(), 0.0);
@@ -93,8 +85,7 @@ public class ComplexTest
      * Test of mutableAdd method, of class Complex.
      */
     @Test
-    public void testMutableAdd_double_double()
-    {
+    public void testMutableAdd_double_double() {
         System.out.println("mutableAdd");
         a.mutableAdd(b.getReal(), b.getImag());
         assertEquals(new Complex(5, 8), a);
@@ -108,8 +99,7 @@ public class ComplexTest
      * Test of mutableAdd method, of class Complex.
      */
     @Test
-    public void testMutableAdd_Complex()
-    {
+    public void testMutableAdd_Complex() {
         System.out.println("mutableAdd");
         a.mutableAdd(b);
         assertEquals(new Complex(5, 8), a);
@@ -123,8 +113,7 @@ public class ComplexTest
      * Test of add method, of class Complex.
      */
     @Test
-    public void testAdd()
-    {
+    public void testAdd() {
         System.out.println("add");
         Complex result = a.add(b);
         assertEquals(result, new Complex(5, 8));
@@ -140,8 +129,7 @@ public class ComplexTest
      * Test of mutableSubtract method, of class Complex.
      */
     @Test
-    public void testMutableSubtract_double_double()
-    {
+    public void testMutableSubtract_double_double() {
         System.out.println("mutableSubtract");
         a.mutableSubtract(b.getReal(), b.getImag());
         assertEquals(new Complex(-1, -6), a);
@@ -155,8 +143,7 @@ public class ComplexTest
      * Test of mutableSubtract method, of class Complex.
      */
     @Test
-    public void testMutableSubtract_Complex()
-    {
+    public void testMutableSubtract_Complex() {
         System.out.println("mutableSubtract");
         a.mutableSubtract(b);
         assertEquals(new Complex(-1, -6), a);
@@ -170,8 +157,7 @@ public class ComplexTest
      * Test of subtract method, of class Complex.
      */
     @Test
-    public void testSubtract()
-    {
+    public void testSubtract() {
         System.out.println("subtract");
         Complex result = a.subtract(b);
         assertEquals(result, new Complex(-1, -6));
@@ -187,8 +173,7 @@ public class ComplexTest
      * Test of cMul method, of class Complex.
      */
     @Test
-    public void testCMul()
-    {
+    public void testCMul() {
         System.out.println("cMul");
         double r0 = a.getReal();
         double i0 = a.getImag();
@@ -204,8 +189,7 @@ public class ComplexTest
      * Test of mutableMultiply method, of class Complex.
      */
     @Test
-    public void testMutableMultiply_double_double()
-    {
+    public void testMutableMultiply_double_double() {
         System.out.println("mutableMultiply");
         a.mutableMultiply(b.getReal(), b.getImag());
         assertEquals(new Complex(-1, 17), a);
@@ -219,8 +203,7 @@ public class ComplexTest
      * Test of mutableMultiply method, of class Complex.
      */
     @Test
-    public void testMutableMultiply_Complex()
-    {
+    public void testMutableMultiply_Complex() {
         System.out.println("mutableMultiply");
         a.mutableMultiply(b);
         assertEquals(new Complex(-1, 17), a);
@@ -234,8 +217,7 @@ public class ComplexTest
      * Test of multiply method, of class Complex.
      */
     @Test
-    public void testMultiply()
-    {
+    public void testMultiply() {
         System.out.println("multiply");
         Complex result = a.multiply(b);
         assertEquals(result, new Complex(-1, 17));
@@ -251,8 +233,7 @@ public class ComplexTest
      * Test of cDiv method, of class Complex.
      */
     @Test
-    public void testCDiv()
-    {
+    public void testCDiv() {
         System.out.println("cDiv");
         double r0 = a.getReal();
         double i0 = a.getImag();
@@ -260,7 +241,7 @@ public class ComplexTest
         double i1 = b.getImag();
         double[] results = new double[2];
         Complex.cDiv(r0, i0, r1, i1, results);
-        assertEquals( 0.224137931034483, results[0], 1e-14);
+        assertEquals(0.224137931034483, results[0], 1e-14);
         assertEquals(-0.189655172413793, results[1], 1e-14);
     }
 
@@ -268,8 +249,7 @@ public class ComplexTest
      * Test of mutableDivide method, of class Complex.
      */
     @Test
-    public void testMutableDivide_double_double()
-    {
+    public void testMutableDivide_double_double() {
         System.out.println("mutableDivide");
         a.mutableDivide(b.getReal(), b.getImag());
         assertTrue(a.equals(new Complex(0.224137931034483, -0.189655172413793), 1e-14));
@@ -283,8 +263,7 @@ public class ComplexTest
      * Test of mutableDivide method, of class Complex.
      */
     @Test
-    public void testMutableDivide_Complex()
-    {
+    public void testMutableDivide_Complex() {
         System.out.println("mutableDivide");
         a.mutableDivide(b);
         assertTrue(a.equals(new Complex(0.224137931034483, -0.189655172413793), 1e-14));
@@ -298,8 +277,7 @@ public class ComplexTest
      * Test of divide method, of class Complex.
      */
     @Test
-    public void testDivide()
-    {
+    public void testDivide() {
         System.out.println("divide");
         Complex result = a.divide(b);
         assertTrue(result.equals(new Complex(0.224137931034483, -0.189655172413793), 1e-14));
@@ -315,8 +293,7 @@ public class ComplexTest
      * Test of getMagnitude method, of class Complex.
      */
     @Test
-    public void testGetMagnitude()
-    {
+    public void testGetMagnitude() {
         System.out.println("getMagnitude");
         assertEquals(2.23606797749979, a.getMagnitude(), 1e-14);
         assertEquals(7.61577310586391, b.getMagnitude(), 1e-14);
@@ -328,8 +305,7 @@ public class ComplexTest
      * Test of getArg method, of class Complex.
      */
     @Test
-    public void testGetArg()
-    {
+    public void testGetArg() {
         System.out.println("getArg");
         assertEquals(0.463647609000806, a.getArg(), 1e-14);
         assertEquals(1.16590454050981, b.getArg(), 1e-14);
@@ -341,15 +317,14 @@ public class ComplexTest
      * Test of mutateConjugate method, of class Complex.
      */
     @Test
-    public void testMutateConjugate()
-    {
+    public void testMutateConjugate() {
         System.out.println("mutateConjugate");
         a.mutateConjugate();
         assertEquals(new Complex(aClone.getReal(), -aClone.getImag()), a);
-        
+
         c.mutateConjugate();
         assertEquals(new Complex(cClone.getReal(), -cClone.getImag()), c);
-        
+
         d.mutateConjugate();
         assertEquals(new Complex(dClone.getReal(), -dClone.getImag()), d);
     }
@@ -358,17 +333,16 @@ public class ComplexTest
      * Test of getConjugate method, of class Complex.
      */
     @Test
-    public void testGetConjugate()
-    {
+    public void testGetConjugate() {
         System.out.println("getConjugate");
         Complex result = a.getConjugate();
         assertEquals(aClone, a);
         assertEquals(new Complex(aClone.getReal(), -aClone.getImag()), result);
-        
+
         result = c.getConjugate();
         assertEquals(bClone, b);
         assertEquals(new Complex(cClone.getReal(), -cClone.getImag()), result);
-        
+
         result = d.getConjugate();
         assertEquals(bClone, b);
         assertEquals(new Complex(dClone.getReal(), -dClone.getImag()), result);
@@ -379,8 +353,7 @@ public class ComplexTest
      * Test of clone method, of class Complex.
      */
     @Test
-    public void testClone()
-    {
+    public void testClone() {
         System.out.println("clone");
         Complex clone = a.clone();
         assertEquals(aClone, a);
@@ -388,6 +361,6 @@ public class ComplexTest
         clone.setReal(100);
         assertEquals(aClone, a);
         assertTrue(!clone.equals(aClone));
-        
+
     }
 }

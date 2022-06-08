@@ -18,6 +18,7 @@ package jsat.linear.distancemetrics;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;
 import org.junit.After;
@@ -25,68 +26,61 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Edward Raff
  */
-public class JaccardDistanceTest
-{
-    
-    public JaccardDistanceTest()
-    {
+public class JaccardDistanceTest {
+
+    public JaccardDistanceTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
-    
+
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
-    
+
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
      * Test of dist method, of class JaccardDistance.
      */
     @Test
-    public void testDist_Vec_Vec()
-    {
+    public void testDist_Vec_Vec() {
         System.out.println("dist");
         Vec a = DenseVector.toDenseVec(0.0, 1.0, 0.0, 2.0, 5.0);
         Vec b = DenseVector.toDenseVec(1.0, 0.0, 0.0, 3.0, 0.0);
-        double unweightedSim = 1.0/4;
-        double weightedSim = 2.0/10;
+        double unweightedSim = 1.0 / 4;
+        double weightedSim = 2.0 / 10;
         JaccardDistance j = new JaccardDistance(false);
         JaccardDistance wj = new JaccardDistance(true);
-        
+
         assertEquals(unweightedSim, j.eval(a, b), 1e-12);
-        assertEquals(1-unweightedSim, j.dist(a, b), 1e-12);
+        assertEquals(1 - unweightedSim, j.dist(a, b), 1e-12);
         assertEquals(unweightedSim, j.eval(b, a), 1e-12);
-        assertEquals(1-unweightedSim, j.dist(b, a), 1e-12);
-        
+        assertEquals(1 - unweightedSim, j.dist(b, a), 1e-12);
+
         assertEquals(weightedSim, wj.eval(a, b), 1e-12);
-        assertEquals(1-weightedSim, wj.dist(a, b), 1e-12);
+        assertEquals(1 - weightedSim, wj.dist(a, b), 1e-12);
         assertEquals(weightedSim, wj.eval(b, a), 1e-12);
-        assertEquals(1-weightedSim, wj.dist(b, a), 1e-12);
-        
+        assertEquals(1 - weightedSim, wj.dist(b, a), 1e-12);
+
         assertEquals(1.0, j.eval(a, a), 1e-12);
         assertEquals(0.0, j.dist(a, a), 1e-12);
         assertEquals(1.0, j.eval(b, b), 1e-12);
         assertEquals(0.0, j.dist(b, b), 1e-12);
-        
+
         assertEquals(1.0, wj.eval(a, a), 1e-12);
         assertEquals(0.0, wj.dist(a, a), 1e-12);
         assertEquals(1.0, wj.eval(b, b), 1e-12);
@@ -97,8 +91,7 @@ public class JaccardDistanceTest
      * Test of isSymmetric method, of class JaccardDistance.
      */
     @Test
-    public void testIsSymmetric()
-    {
+    public void testIsSymmetric() {
         System.out.println("isSymmetric");
         JaccardDistance instance = new JaccardDistance();
         boolean expResult = true;
@@ -110,8 +103,7 @@ public class JaccardDistanceTest
      * Test of isSubadditive method, of class JaccardDistance.
      */
     @Test
-    public void testIsSubadditive()
-    {
+    public void testIsSubadditive() {
         System.out.println("isSubadditive");
         JaccardDistance instance = new JaccardDistance();
         boolean expResult = true;
@@ -123,8 +115,7 @@ public class JaccardDistanceTest
      * Test of isIndiscemible method, of class JaccardDistance.
      */
     @Test
-    public void testIsIndiscemible()
-    {
+    public void testIsIndiscemible() {
         System.out.println("isIndiscemible");
         JaccardDistance instance = new JaccardDistance();
         boolean expResult = true;
@@ -136,8 +127,7 @@ public class JaccardDistanceTest
      * Test of metricBound method, of class JaccardDistance.
      */
     @Test
-    public void testMetricBound()
-    {
+    public void testMetricBound() {
         System.out.println("metricBound");
         JaccardDistance instance = new JaccardDistance();
         double expResult = 1.0;
@@ -149,8 +139,7 @@ public class JaccardDistanceTest
      * Test of supportsAcceleration method, of class JaccardDistance.
      */
     @Test
-    public void testSupportsAcceleration()
-    {
+    public void testSupportsAcceleration() {
         System.out.println("supportsAcceleration");
         JaccardDistance instance = new JaccardDistance();
         boolean expResult = false;
@@ -162,8 +151,7 @@ public class JaccardDistanceTest
      * Test of getAccelerationCache method, of class JaccardDistance.
      */
     @Test
-    public void testGetAccelerationCache_List()
-    {
+    public void testGetAccelerationCache_List() {
         System.out.println("getAccelerationCache");
         List<? extends Vec> vecs = null;
         JaccardDistance instance = new JaccardDistance();
@@ -176,8 +164,7 @@ public class JaccardDistanceTest
      * Test of getAccelerationCache method, of class JaccardDistance.
      */
     @Test
-    public void testGetAccelerationCache_List_ExecutorService()
-    {
+    public void testGetAccelerationCache_List_ExecutorService() {
         System.out.println("getAccelerationCache");
         List<? extends Vec> vecs = null;
         ExecutorService threadpool = null;
@@ -192,8 +179,7 @@ public class JaccardDistanceTest
      * Test of getQueryInfo method, of class JaccardDistance.
      */
     @Test
-    public void testGetQueryInfo()
-    {
+    public void testGetQueryInfo() {
         System.out.println("getQueryInfo");
         Vec q = null;
         JaccardDistance instance = new JaccardDistance();
@@ -206,13 +192,12 @@ public class JaccardDistanceTest
      * Test of normalized method, of class JaccardDistance.
      */
     @Test
-    public void testNormalized()
-    {
+    public void testNormalized() {
         System.out.println("normalized");
         JaccardDistance instance = new JaccardDistance();
         boolean expResult = true;
         boolean result = instance.normalized();
         assertEquals(expResult, result);
     }
-    
+
 }

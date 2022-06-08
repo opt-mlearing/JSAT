@@ -15,12 +15,11 @@ import jsat.classifiers.DataPoint;
  *
  * @author Edward Raff
  */
-public interface InPlaceTransform extends DataTransform
-{
+public interface InPlaceTransform extends DataTransform {
 
     /**
      * Mutates the given data point. This causes side effects, altering the data
-     * point to have the same value as the output of 
+     * point to have the same value as the output of
      * {@link #transform(jsat.classifiers.DataPoint) }.
      *
      * @param dp the data point to alter

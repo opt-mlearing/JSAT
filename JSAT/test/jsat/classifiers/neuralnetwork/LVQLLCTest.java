@@ -19,6 +19,7 @@ package jsat.classifiers.neuralnetwork;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import jsat.FixedProblems;
 import jsat.classifiers.*;
 import jsat.linear.distancemetrics.EuclideanDistance;
@@ -28,46 +29,38 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Edward Raff <Raff.Edward@gmail.com>
  */
-public class LVQLLCTest
-{
-    
-    public LVQLLCTest()
-    {
+public class LVQLLCTest {
+
+    public LVQLLCTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
-    
+
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
-    
+
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     @Test
-    public void testTrainC_ClassificationDataSet_ExecutorService()
-    {
+    public void testTrainC_ClassificationDataSet_ExecutorService() {
         System.out.println("trainC");
 
-        for(LVQ.LVQVersion method : LVQ.LVQVersion.values())
-        {
+        for (LVQ.LVQVersion method : LVQ.LVQVersion.values()) {
             LVQLLC instance = new LVQLLC(new EuclideanDistance(), 5);
             instance.setRepresentativesPerClass(20);
             instance.setLVQMethod(method);
@@ -84,13 +77,11 @@ public class LVQLLCTest
     }
 
     @Test
-    public void testTrainC_ClassificationDataSet()
-    {
+    public void testTrainC_ClassificationDataSet() {
         System.out.println("trainC");
 
-        
-        for(LVQ.LVQVersion method : LVQ.LVQVersion.values())
-        {
+
+        for (LVQ.LVQVersion method : LVQ.LVQVersion.values()) {
             LVQLLC instance = new LVQLLC(new EuclideanDistance(), 5);
             instance.setRepresentativesPerClass(20);
             instance.setLVQMethod(method);
@@ -105,8 +96,7 @@ public class LVQLLCTest
     }
 
     @Test
-    public void testClone()
-    {
+    public void testClone() {
         System.out.println("clone");
 
         LVQLLC instance = new LVQLLC(new EuclideanDistance(), 5);
@@ -130,5 +120,5 @@ public class LVQLLCTest
             assertEquals(t2.getDataPointCategory(i), result.classify(t2.getDataPoint(i)).mostLikely());
 
     }
-    
+
 }

@@ -18,6 +18,7 @@ package jsat.linear.distancemetrics;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
 import jsat.linear.Vec;
 
 /**
@@ -25,21 +26,20 @@ import jsat.linear.Vec;
  * given base distance metric, which will be used as the actual method of
  * measuring distances. This class will count how many times a distance
  * calculation was queried. This class is thread safe. <br>
- * NOTE: all clones of this object will share the same counter. 
+ * NOTE: all clones of this object will share the same counter.
  *
  * @author Edward Raff <Raff.Edward@gmail.com>
  */
-public class DistanceCounter implements DistanceMetric
-{
+public class DistanceCounter implements DistanceMetric {
     private DistanceMetric base;
     private AtomicLong counter;
 
     /**
      * Creates a new distance counter to wrap the given base metric
+     *
      * @param base the base distance measure to use
      */
-    public DistanceCounter(DistanceMetric base)
-    {
+    public DistanceCounter(DistanceMetric base) {
         this.base = base;
         this.counter = new AtomicLong();
     }
@@ -50,102 +50,86 @@ public class DistanceCounter implements DistanceMetric
      *
      * @param toCopy the object to get a copy of
      */
-    public DistanceCounter(DistanceCounter toCopy)
-    {
+    public DistanceCounter(DistanceCounter toCopy) {
         this.base = toCopy.base.clone();
         this.counter = toCopy.counter;
     }
-    
+
     /**
-     * 
      * @return the number of distance calls that have occurred
      */
-    public long getCallCount()
-    {
+    public long getCallCount() {
         return counter.get();
     }
-    
+
     /**
-     * Resets the distance counter calls to zero. 
+     * Resets the distance counter calls to zero.
      */
-    public void resetCounter()
-    {
+    public void resetCounter() {
         counter.set(0);
     }
 
     @Override
-    public double dist(Vec a, Vec b)
-    {
+    public double dist(Vec a, Vec b) {
         counter.incrementAndGet();
         return base.dist(a, b);
     }
 
     @Override
-    public boolean isSymmetric()
-    {
+    public boolean isSymmetric() {
         return base.isSymmetric();
     }
 
     @Override
-    public boolean isSubadditive()
-    {
+    public boolean isSubadditive() {
         return base.isSubadditive();
     }
 
     @Override
-    public boolean isIndiscemible()
-    {
+    public boolean isIndiscemible() {
         return base.isIndiscemible();
     }
 
     @Override
-    public double metricBound()
-    {
+    public double metricBound() {
         return base.metricBound();
     }
 
     @Override
-    public boolean supportsAcceleration()
-    {
+    public boolean supportsAcceleration() {
         return base.supportsAcceleration();
     }
 
     @Override
-    public List<Double> getAccelerationCache(List<? extends Vec> vecs, boolean parallel)
-    {
+    public List<Double> getAccelerationCache(List<? extends Vec> vecs, boolean parallel) {
         return base.getAccelerationCache(vecs, parallel);
     }
 
     @Override
-    public double dist(int a, int b, List<? extends Vec> vecs, List<Double> cache)
-    {
+    public double dist(int a, int b, List<? extends Vec> vecs, List<Double> cache) {
         counter.incrementAndGet();
         return base.dist(a, b, vecs, cache);
     }
 
     @Override
-    public double dist(int a, Vec b, List<? extends Vec> vecs, List<Double> cache)
-    {
+    public double dist(int a, Vec b, List<? extends Vec> vecs, List<Double> cache) {
         counter.incrementAndGet();
         return base.dist(a, b, vecs, cache);
     }
 
     @Override
-    public List<Double> getQueryInfo(Vec q)
-    {
+    public List<Double> getQueryInfo(Vec q) {
         return base.getQueryInfo(q);
     }
 
     @Override
-    public double dist(int a, Vec b, List<Double> qi, List<? extends Vec> vecs, List<Double> cache)
-    {
+    public double dist(int a, Vec b, List<Double> qi, List<? extends Vec> vecs, List<Double> cache) {
         counter.incrementAndGet();
         return base.dist(a, b, qi, vecs, cache);
     }
 
     @Override
-    public DistanceCounter clone()
-    {
+    public DistanceCounter clone() {
         return new DistanceCounter(this);
     }
 

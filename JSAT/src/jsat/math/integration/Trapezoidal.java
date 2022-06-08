@@ -1,4 +1,3 @@
-
 package jsat.math.integration;
 
 import jsat.math.Function1D;
@@ -9,8 +8,7 @@ import jsat.math.Function1D;
  *
  * @author Edward Raff
  */
-public class Trapezoidal
-{
+public class Trapezoidal {
     /**
      * Numerically computes the integral of the given function
      *
@@ -21,13 +19,12 @@ public class Trapezoidal
      * @return an approximation of the integral of
      * &int;<sub>a</sub><sup>b</sup>f(x) , dx
      */
-    static public double trapz(Function1D f, double a, double b, int N)
-    {
-        if(a == b)
+    static public double trapz(Function1D f, double a, double b, int N) {
+        if (a == b)
             return 0;
-        else if(a > b)
-            throw new RuntimeException("Integral upper limit (" + b+") must be larger than the lower-limit (" + a + ")");
-        else if(N < 1)
+        else if (a > b)
+            throw new RuntimeException("Integral upper limit (" + b + ") must be larger than the lower-limit (" + a + ")");
+        else if (N < 1)
             throw new RuntimeException("At least two integration parts must be used, not " + N);
         /*
          *    b               /              N - 1                 \
@@ -38,12 +35,12 @@ public class Trapezoidal
          * /                  |              =====                 |
          *  a                 \              k = 1                 /
          */
-        double sum =0;
-        for(int k = 1; k < N; k++)
-            sum += f.f(a+k*(b-a)/N);
+        double sum = 0;
+        for (int k = 1; k < N; k++)
+            sum += f.f(a + k * (b - a) / N);
 
-        sum+= (f.f(a)+f.f(b))/2;
+        sum += (f.f(a) + f.f(b)) / 2;
 
-        return (b-a)/N*sum;
+        return (b - a) / N * sum;
     }
 }

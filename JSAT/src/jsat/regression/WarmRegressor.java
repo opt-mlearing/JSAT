@@ -1,17 +1,15 @@
 package jsat.regression;
 
-import java.util.concurrent.ExecutorService;
-
 /**
- * This interface is meant for models that support efficient warm starting from 
- * the solution of a previous model. Training with a warm start means that 
- * instead of solving the problem from scratch, the code can use a previous 
+ * This interface is meant for models that support efficient warm starting from
+ * the solution of a previous model. Training with a warm start means that
+ * instead of solving the problem from scratch, the code can use a previous
  * solution to start closer towards its goal. <br>
  * <br>
- * Some algorithm may be able to warm start from solutions of the same form, 
+ * Some algorithm may be able to warm start from solutions of the same form,
  * even if they were trained by a different algorithm. Other algorithms may only
- * be able to warm start from the same algorithm. There may also be restrictions 
- * that the warm start can only be from a solution trained on the exact same 
+ * be able to warm start from the same algorithm. There may also be restrictions
+ * that the warm start can only be from a solution trained on the exact same
  * data set. The latter case is indicated by the {@link #warmFromSameDataOnly()}
  * method. <br>
  * <br>
@@ -22,39 +20,38 @@ import java.util.concurrent.ExecutorService;
  * <br>
  * <br>
  * Note: The use of this class is still under development, and may change in the
- * future. 
- * 
+ * future.
+ *
  * @author Edward Raff
  */
-public interface WarmRegressor extends Regressor
-{
+public interface WarmRegressor extends Regressor {
     /**
-     * Some models can only be warm started from a solution trained on the 
-     * exact same data set as the model it is warm starting from. If this is the 
-     * case {@code true} will be returned. The behavior for training on a 
-     * different data set when this is defined is undefined. It may cause an 
-     * error, or it may cause the algorithm to take longer or reach a worse 
+     * Some models can only be warm started from a solution trained on the
+     * exact same data set as the model it is warm starting from. If this is the
+     * case {@code true} will be returned. The behavior for training on a
+     * different data set when this is defined is undefined. It may cause an
+     * error, or it may cause the algorithm to take longer or reach a worse
      * solution. <br>
-     * When {@code true}, it is important that the data set be unaltered - this 
-     * includes mutating the values stored or re-arranging the data points 
-     * within the data set. 
-     * 
-     * @return {@code true} if the algorithm can only be warm started from the 
-     * model trained on the exact same data set. 
+     * When {@code true}, it is important that the data set be unaltered - this
+     * includes mutating the values stored or re-arranging the data points
+     * within the data set.
+     *
+     * @return {@code true} if the algorithm can only be warm started from the
+     * model trained on the exact same data set.
      */
     public boolean warmFromSameDataOnly();
-    
-    
+
+
     /**
-     * Trains the regressor and constructs a model for regression using the 
-     * given data set. If the training method knows how, it will used the 
+     * Trains the regressor and constructs a model for regression using the
+     * given data set. If the training method knows how, it will used the
      * <tt>threadPool</tt> to conduct training in parallel. This method will
      * block until the training has completed.
      *
-     * @param dataSet the data set to train on
+     * @param dataSet      the data set to train on
      * @param warmSolution the solution to use to warm start this model
-     * @param parallel {@code true} if the training should be done using
-     * multiple-cores, {@code false} for single threaded.
+     * @param parallel     {@code true} if the training should be done using
+     *                     multiple-cores, {@code false} for single threaded.
      */
     public void train(RegressionDataSet dataSet, Regressor warmSolution, boolean parallel);
 
@@ -62,11 +59,10 @@ public interface WarmRegressor extends Regressor
      * Trains the regressor and constructs a model for regression using the
      * given data set.
      *
-     * @param dataSet the data set to train on
+     * @param dataSet      the data set to train on
      * @param warmSolution the solution to use to warm start this model
      */
-    default public void train(RegressionDataSet dataSet, Regressor warmSolution)
-    {
+    default public void train(RegressionDataSet dataSet, Regressor warmSolution) {
         train(dataSet, warmSolution, false);
     }
 

@@ -2,6 +2,7 @@ package jsat.classifiers.linear;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+
 import jsat.SingleWeightVectorModel;
 import jsat.classifiers.*;
 import jsat.exceptions.UntrainedModelException;
@@ -24,8 +25,8 @@ import jsat.utils.random.XORWOW;
  * {@link LogisticLoss} for classification and {@link SquaredLoss} for
  * regression are the ones used in the original paper.
  * <br><br>
- * Because the SCD needs column major data for efficient implementation, a 
- * second copy of data will be created in memory during training. 
+ * Because the SCD needs column major data for efficient implementation, a
+ * second copy of data will be created in memory during training.
  * <br><br>
  * See: Shalev-Shwartz, S.,&amp;Tewari, A. (2009). <i>Stochastic Methods for
  * L<sub>1</sub>-regularized Loss Minimization</i>. In 26th International
@@ -34,11 +35,10 @@ import jsat.utils.random.XORWOW;
  *
  * @author Edward Raff
  */
-public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVectorModel
-{
+public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVectorModel {
 
-	private static final long serialVersionUID = 3576901723216525618L;
-	private Vec w;
+    private static final long serialVersionUID = 3576901723216525618L;
+    private Vec w;
     private LossFunc loss;
     private double reg;
     private int iterations;
@@ -46,12 +46,11 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
     /**
      * Creates anew SCD learner
      *
-     * @param loss the loss function to use
+     * @param loss           the loss function to use
      * @param regularization the regularization term to used
-     * @param iterations the number of iterations to perform
+     * @param iterations     the number of iterations to perform
      */
-    public SCD(LossFunc loss, double regularization, int iterations)
-    {
+    public SCD(LossFunc loss, double regularization, int iterations) {
         double beta = loss.getDeriv2Max();
         if (Double.isNaN(beta) || Double.isInfinite(beta) || beta <= 0)
             throw new IllegalArgumentException("SCD needs a loss function with a finite positive maximal second derivative");
@@ -65,8 +64,7 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
      *
      * @param toCopy the object to copy
      */
-    public SCD(SCD toCopy)
-    {
+    public SCD(SCD toCopy) {
         this(toCopy.loss.clone(), toCopy.reg, toCopy.iterations);
         if (toCopy.w != null)
             this.w = toCopy.w.clone();
@@ -77,9 +75,8 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
      *
      * @param iterations the number of training iterations
      */
-    public void setIterations(int iterations)
-    {
-        if(iterations < 1)
+    public void setIterations(int iterations) {
+        if (iterations < 1)
             throw new IllegalArgumentException("The iterations must be a positive value, not " + iterations);
         this.iterations = iterations;
     }
@@ -89,8 +86,7 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
      *
      * @return the number of iterations used
      */
-    public int getIterations()
-    {
+    public int getIterations() {
         return iterations;
     }
 
@@ -102,8 +98,7 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
      *
      * @param regularization the regularization to apply in (0, Infinity)
      */
-    public void setRegularization(double regularization)
-    {
+    public void setRegularization(double regularization) {
         if (Double.isInfinite(regularization) || Double.isNaN(regularization) || regularization <= 0)
             throw new IllegalArgumentException("Regularization must be a positive value");
         this.reg = regularization;
@@ -114,50 +109,43 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
      *
      * @return the regularization parameter value used for learning.
      */
-    public double getRegularization()
-    {
+    public double getRegularization() {
         return reg;
     }
 
     @Override
-    public Vec getRawWeight()
-    {
+    public Vec getRawWeight() {
         return w;
     }
 
     @Override
-    public double getBias()
-    {
+    public double getBias() {
         return 0;
     }
 
     @Override
-    public Vec getRawWeight(int index)
-    {
-        if(index < 1)
+    public Vec getRawWeight(int index) {
+        if (index < 1)
             return getRawWeight();
         else
             throw new IndexOutOfBoundsException("Model has only 1 weight vector");
     }
 
     @Override
-    public double getBias(int index)
-    {
+    public double getBias(int index) {
         if (index < 1)
             return getBias();
         else
             throw new IndexOutOfBoundsException("Model has only 1 weight vector");
     }
-    
+
     @Override
-    public int numWeightsVecs()
-    {
+    public int numWeightsVecs() {
         return 1;
     }
-    
+
     @Override
-    public CategoricalResults classify(DataPoint data)
-    {
+    public CategoricalResults classify(DataPoint data) {
         if (w != null && loss instanceof LossC)
             return ((LossC) loss).getClassification(w.dot(data.getNumericalValues()));
         else
@@ -165,14 +153,12 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
     }
 
     @Override
-    public void train(ClassificationDataSet dataSet, boolean parallel)
-    {
+    public void train(ClassificationDataSet dataSet, boolean parallel) {
         train(dataSet);
     }
 
     @Override
-    public void train(ClassificationDataSet dataSet)
-    {
+    public void train(ClassificationDataSet dataSet) {
         double[] targets = new double[dataSet.size()];
         for (int i = 0; i < targets.length; i++)
             targets[i] = dataSet.getDataPointCategory(i) * 2 - 1;
@@ -180,14 +166,12 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
     }
 
     @Override
-    public boolean supportsWeightedData()
-    {
+    public boolean supportsWeightedData() {
         return false;
     }
 
     @Override
-    public double regress(DataPoint data)
-    {
+    public double regress(DataPoint data) {
         if (w != null && loss instanceof LossR)
             return ((LossR) loss).getRegression(w.dot(data.getNumericalValues()));
         else
@@ -195,30 +179,25 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
     }
 
     @Override
-    public void train(RegressionDataSet dataSet, boolean parallel)
-    {
+    public void train(RegressionDataSet dataSet, boolean parallel) {
         train(dataSet);
     }
 
     @Override
-    public void train(RegressionDataSet dataSet)
-    {
+    public void train(RegressionDataSet dataSet) {
         train(dataSet.getNumericColumns(), dataSet.getTargetValues().arrayCopy());
     }
 
     /**
-     *
      * @param columns columns of the training matrix
-     * @param y the target values
+     * @param y       the target values
      */
-    private void train(Vec[] columns, double[] y)
-    {
+    private void train(Vec[] columns, double[] y) {
         final double beta = loss.getDeriv2Max();
         double[] z = new double[y.length];///stores w.dot(x)
         w = new DenseVector(columns.length);
         Random rand = RandomUtil.getRandom();
-        for (int iter = 0; iter < iterations; iter++)
-        {
+        for (int iter = 0; iter < iterations; iter++) {
             final int j = rand.nextInt(columns.length);
             double g = 0;
             for (IndexValue iv : columns[j])
@@ -240,8 +219,7 @@ public class SCD implements Classifier, Regressor, Parameterized, SingleWeightVe
     }
 
     @Override
-    public SCD clone()
-    {
+    public SCD clone() {
         return new SCD(this);
     }
 }

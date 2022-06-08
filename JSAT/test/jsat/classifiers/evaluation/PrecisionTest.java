@@ -8,56 +8,49 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Edward Raff
  */
-public class PrecisionTest
-{
-    
-    public PrecisionTest()
-    {
+public class PrecisionTest {
+
+    public PrecisionTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
-    
+
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
-    
+
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
      * Test of getScore method, of class Precision.
      */
     @Test
-    public void testGetScore()
-    {
+    public void testGetScore() {
         System.out.println("getScore");
         Precision scorer = new Precision();
         Precision otherHalf = scorer.clone();
-        
+
         assertEquals(scorer, otherHalf);
         assertEquals(scorer.hashCode(), otherHalf.hashCode());
         assertFalse(otherHalf.lowerIsBetter());
-        
+
         assertFalse(scorer.equals(""));
         assertFalse(scorer.hashCode() == "".hashCode());
-        
+
         scorer.prepare(new CategoricalData(2));
         otherHalf.prepare(new CategoricalData(2));
         //correct
@@ -68,12 +61,12 @@ public class PrecisionTest
         otherHalf.addResult(new CategoricalResults(new double[]{0.6, 0.4}), 1, 1.0);
         scorer.addResult(new CategoricalResults(new double[]{0.4, 0.6}), 0, 2.0);
         otherHalf.addResult(new CategoricalResults(new double[]{0.9, 0.1}), 1, 1.0);
-        
+
         scorer.addResults(otherHalf);
-        
+
         double tp = 2, tn = 3, fp = 2, fn = 2;
-        assertEquals(tp/(tp*+fp), scorer.getScore(), 1e-2);
-        assertEquals(tp/(tp*+fp), scorer.clone().getScore(), 1e-2);
+        assertEquals(tp / (tp * +fp), scorer.getScore(), 1e-2);
+        assertEquals(tp / (tp * +fp), scorer.clone().getScore(), 1e-2);
     }
 
 }

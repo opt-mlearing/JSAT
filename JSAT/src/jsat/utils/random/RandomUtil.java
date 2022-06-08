@@ -25,14 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Edward Raff <Raff.Edward@gmail.com>
  */
-public class RandomUtil
-{
+public class RandomUtil {
     private static final ThreadLocal<Random> localRandoms = ThreadLocal.withInitial(RandomUtil::getRandom);
 
-    private RandomUtil()
-    {
+    private RandomUtil() {
     }
-    
+
     /**
      * If not specified, this will be the seed used for random objects used
      * internally within JSAT.<br>
@@ -43,7 +41,7 @@ public class RandomUtil
      * repeatable experiments.
      */
     public static AtomicInteger DEFAULT_SEED = new AtomicInteger(963863937);
-    
+
     /**
      * This controls whether or not {@link #getRandom() } will cause a change in
      * the {@link #DEFAULT_SEED} each time it is called. This is the default to
@@ -69,18 +67,17 @@ public class RandomUtil
      * different, seeds. Controlling the base seed and its behavior can be done
      * using {@link #DEFAULT_SEED} and {@link #INCREMENT_SEEDS}.
      *
-     * @return a new random number generator to use. 
+     * @return a new random number generator to use.
      */
-    public static Random getRandom()
-    {
+    public static Random getRandom() {
         int seed;
-        if(INCREMENT_SEEDS)
+        if (INCREMENT_SEEDS)
             seed = DEFAULT_SEED.getAndAdd(SEED_INCREMENT);
         else
             seed = DEFAULT_SEED.get();
         return new XORWOW(seed);
     }
-    
+
     /**
      * Returns a new Random object that can be used, initiated with the given
      * seed. The Random object returned is promised to be a reasonably high
@@ -89,11 +86,10 @@ public class RandomUtil
      * Java's default PRNG in every way. <br>
      *
      * @param seed the seed of the PRNG, which determines the sequence generated
-     * by the returned object
+     *             by the returned object
      * @return a new random number generator to use.
      */
-    public static Random getRandom(int seed)
-    {
+    public static Random getRandom(int seed) {
         return new XORWOW(seed);
     }
 
@@ -104,8 +100,7 @@ public class RandomUtil
      *
      * @return a Random object for use
      */
-    public static Random getLocalRandom()
-    {
+    public static Random getLocalRandom() {
         return localRandoms.get();
     }
 }

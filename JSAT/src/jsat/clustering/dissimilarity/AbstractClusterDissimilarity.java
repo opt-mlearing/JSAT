@@ -4,12 +4,11 @@ import jsat.DataSet;
 
 /**
  * This base class does not currently provide any inheritable functionality, but
- * stores static methods. 
- * 
+ * stores static methods.
+ *
  * @author Edward Raff
  */
-public abstract class AbstractClusterDissimilarity implements ClusterDissimilarity
-{
+public abstract class AbstractClusterDissimilarity implements ClusterDissimilarity {
 
     /**
      * A convenience method. If the <i>distanceMatrix</i> was created with
@@ -18,15 +17,13 @@ public abstract class AbstractClusterDissimilarity implements ClusterDissimilari
      * index.
      *
      * @param distanceMatrix the distance matrix to query from
-     * @param i the first index
-     * @param j the second index
+     * @param i              the first index
+     * @param j              the second index
      * @return the correct value from the distance matrix from the index given
      * as if the distance matrix was of full form
      */
-    public static double getDistance(double[][] distanceMatrix, int i, int j)
-    {
-        if (i > j)
-        {
+    public static double getDistance(double[][] distanceMatrix, int i, int j) {
+        if (i > j) {
             int tmp = j;
             j = i;
             i = tmp;
@@ -34,22 +31,20 @@ public abstract class AbstractClusterDissimilarity implements ClusterDissimilari
 
         return distanceMatrix[i][j - i - 1];
     }
-    
+
     /**
      * A convenience method. If the <i>distanceMatrix</i> was created with
      * {@link #createDistanceMatrix(jsat.DataSet, jsat.clustering.dissimilarity.ClusterDissimilarity)
      * }, then this method will set the appropriate value for the desired
      * index.
-     * 
+     *
      * @param distanceMatrix the distance matrix to query from
-     * @param i the first index
-     * @param j the second index
-     * @param dist the new distance value to store in the matrix
+     * @param i              the first index
+     * @param j              the second index
+     * @param dist           the new distance value to store in the matrix
      */
-    public static void setDistance(double[][] distanceMatrix, int i, int j, double dist)
-    {
-        if (i > j)
-        {
+    public static void setDistance(double[][] distanceMatrix, int i, int j, double dist) {
+        if (i > j) {
             int tmp = j;
             j = i;
             i = tmp;
@@ -69,16 +64,14 @@ public abstract class AbstractClusterDissimilarity implements ClusterDissimilari
      * that i &ge; j, and accessed as [i][j-i-1]
      *
      * @param dataSet the data set to create distance matrix for
-     * @param cd the cluster dissimilarity measure to use
+     * @param cd      the cluster dissimilarity measure to use
      * @return a upper triangular distance matrix
      */
-    public static double[][] createDistanceMatrix(DataSet dataSet, ClusterDissimilarity cd)
-    {
+    public static double[][] createDistanceMatrix(DataSet dataSet, ClusterDissimilarity cd) {
         double[][] distances = new double[dataSet.size()][];
 
 
-        for (int i = 0; i < distances.length; i++)
-        {
+        for (int i = 0; i < distances.length; i++) {
             distances[i] = new double[dataSet.size() - i - 1];
             for (int j = i + 1; j < distances.length; j++)
                 distances[i][j - i - 1] = cd.distance(dataSet.getDataPoint(i), dataSet.getDataPoint(j));

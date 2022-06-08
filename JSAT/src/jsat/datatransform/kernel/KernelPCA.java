@@ -3,6 +3,7 @@ package jsat.datatransform.kernel;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
 import jsat.DataSet;
 import jsat.classifiers.DataPoint;
 import jsat.datatransform.DataTransformBase;
@@ -23,21 +24,20 @@ import jsat.utils.random.RandomUtil;
 
 /**
  * A kernelized implementation of {@link PCA}. Because this works in a different
- * feature space, it will do its own centering in the kernel space. 
+ * feature space, it will do its own centering in the kernel space.
  * <br><br>
  * KernelPCA is expensive to compute at O(n<sup>3</sup>) work, where <i>n</i> is
  * the number of data points. For this reason, sampling from {@link Nystrom} is
- * used to reduce the data set to a reasonable approximation. 
+ * used to reduce the data set to a reasonable approximation.
  * <br><br>
  * See: Schölkopf, B., Smola, A.,&amp;Müller, K.-R. (1998). <i>Nonlinear Component
- * Analysis as a Kernel Eigenvalue Problem</i>. Neural Computation, 10(5), 
+ * Analysis as a Kernel Eigenvalue Problem</i>. Neural Computation, 10(5),
  * 1299–1319. doi:10.1162/089976698300017467
- * 
+ *
  * @author Edward Raff
  * @see Nystrom.SamplingMethod
  */
-public class KernelPCA extends DataTransformBase
-{
+public class KernelPCA extends DataTransformBase {
 
     private static final long serialVersionUID = 5676602024560381023L;
 
@@ -49,7 +49,7 @@ public class KernelPCA extends DataTransformBase
     private KernelTrick k;
     private int basisSize;
     private Nystrom.SamplingMethod samplingMethod;
-    
+
     private double[] eigenVals;
     /**
      * The matrix of transformed eigen vectors
@@ -59,184 +59,169 @@ public class KernelPCA extends DataTransformBase
      * The vecs used for the transform
      */
     private Vec[] vecs;
-    
+
     //row / colum info for centering in the feature space
     private double[] rowAvg;
     private double allAvg;
-    
+
     /**
      * Creates a new Kernel PCA transform object using the
      * {@link RBFKernel RBF Kernel} and 100 dimensions
-     *
      */
-    public KernelPCA()
-    {
+    public KernelPCA() {
         this(100);
     }
-    
+
     /**
      * Creates a new Kernel PCA transform object using the
      * {@link RBFKernel RBF Kernel}
      *
      * @param dimensions the number of dimensions to project down to. Must be
-     * less than than the basis size
+     *                   less than than the basis size
      */
-    public KernelPCA(int dimensions)
-    {
+    public KernelPCA(int dimensions) {
         this(new RBFKernel(), dimensions);
     }
 
     /**
      * Creates a new Kernel PCA transform object
      *
-     * @param k the kernel trick to use
+     * @param k          the kernel trick to use
      * @param dimensions the number of dimensions to project down to. Must be
-     * less than than the basis size
+     *                   less than than the basis size
      */
-    public KernelPCA(KernelTrick k, int dimensions)
-    {
+    public KernelPCA(KernelTrick k, int dimensions) {
         this(k, dimensions, 1000, SamplingMethod.UNIFORM);
     }
 
     /**
      * Creates a new Kernel PCA transform object
-     * @param k the kernel trick to use
-     * @param dimensions the number of dimensions to project down to. Must be 
-     * less than than the basis size
-     * @param basisSize the number of points from the data set to select. If
-     * larger than the number of data points in the data set, the whole data set
-     * will be used. 
+     *
+     * @param k              the kernel trick to use
+     * @param dimensions     the number of dimensions to project down to. Must be
+     *                       less than than the basis size
+     * @param basisSize      the number of points from the data set to select. If
+     *                       larger than the number of data points in the data set, the whole data set
+     *                       will be used.
      * @param samplingMethod the sampling method to select the basis vectors
      */
-    public KernelPCA(KernelTrick k, int dimensions, int basisSize, Nystrom.SamplingMethod samplingMethod)
-    {
+    public KernelPCA(KernelTrick k, int dimensions, int basisSize, Nystrom.SamplingMethod samplingMethod) {
         setDimensions(dimensions);
         setKernel(k);
         setBasisSize(basisSize);
         setBasisSamplingMethod(samplingMethod);
     }
-    
+
     /**
      * Creates a new Kernel PCA transform object
-     * @param k the kernel trick to use
-     * @param ds the data set to form the data transform from
-     * @param dimensions the number of dimensions to project down to. Must be 
-     * less than than the basis size
-     * @param basisSize the number of points from the data set to select. If
-     * larger than the number of data points in the data set, the whole data set
-     * will be used. 
+     *
+     * @param k              the kernel trick to use
+     * @param ds             the data set to form the data transform from
+     * @param dimensions     the number of dimensions to project down to. Must be
+     *                       less than than the basis size
+     * @param basisSize      the number of points from the data set to select. If
+     *                       larger than the number of data points in the data set, the whole data set
+     *                       will be used.
      * @param samplingMethod the sampling method to select the basis vectors
      */
-    public KernelPCA(KernelTrick k, DataSet ds, int dimensions, int basisSize, Nystrom.SamplingMethod samplingMethod)
-    {
+    public KernelPCA(KernelTrick k, DataSet ds, int dimensions, int basisSize, Nystrom.SamplingMethod samplingMethod) {
         this(k, dimensions, basisSize, samplingMethod);
         fit(ds);
     }
 
     @Override
-    public void fit(DataSet ds)
-    {
-        if(ds.size() <= basisSize)
-        {
+    public void fit(DataSet ds) {
+        if (ds.size() <= basisSize) {
             vecs = new Vec[ds.size()];
-            for(int i = 0; i < vecs.length; i++)
+            for (int i = 0; i < vecs.length; i++)
                 vecs[i] = ds.getDataPoint(i).getNumericalValues();
-        }
-        else
-        {
+        } else {
             int i = 0;
             List<Vec> sample = Nystrom.sampleBasisVectors(k, ds, ds.getDataVectors(), samplingMethod, basisSize, false, RandomUtil.getRandom());
             vecs = new Vec[sample.size()];
-            for(Vec v : sample)
+            for (Vec v : sample)
                 vecs[i++] = v;
         }
         Matrix K = new DenseMatrix(vecs.length, vecs.length);
-        
+
         //Info used to compute centered Kernel matrix
         rowAvg = new double[K.rows()];
         allAvg = 0;
-        
-        for(int i = 0; i < K.rows(); i++)
-        {
+
+        for (int i = 0; i < K.rows(); i++) {
             Vec x_i = vecs[i];
-            for(int j = i; j < K.cols(); j++)
-            {
+            for (int j = i; j < K.cols(); j++) {
                 double K_ij = k.eval(x_i, vecs[j]);
                 K.set(i, j, K_ij);
 
                 K.set(j, i, K_ij);//K = K'
             }
         }
-        
+
         //Get row / col info to perform centering. Since K is symetric, the row 
         //and col info are the same
-        for(int i = 0; i < K.rows(); i++)
-            for(int j = 0; j < K.cols(); j++)
-                rowAvg[i] += K.get(i, j);
-        
         for (int i = 0; i < K.rows(); i++)
-        {
+            for (int j = 0; j < K.cols(); j++)
+                rowAvg[i] += K.get(i, j);
+
+        for (int i = 0; i < K.rows(); i++) {
             allAvg += rowAvg[i];
             rowAvg[i] /= K.rows();
         }
-        
-        allAvg /= (K.rows()*K.cols());
 
-        
+        allAvg /= (K.rows() * K.cols());
+
+
         //Centered version of the marix
         //K_c(i, j) = K_ij - sum_z K_zj / m - sum_z K_iz / m + sum_{z,y} K_zy / m^2
-        
-        for(int i = 0; i < K.rows(); i++)
-            for(int j = 0; j < K.cols(); j++)
+
+        for (int i = 0; i < K.rows(); i++)
+            for (int j = 0; j < K.cols(); j++)
                 K.set(i, j, K.get(i, j) - rowAvg[i] - rowAvg[j] + allAvg);
-        
-        
+
+
         EigenValueDecomposition evd = new EigenValueDecomposition(K);
-        evd.sortByEigenValue(new Comparator<Double>() 
-        {
+        evd.sortByEigenValue(new Comparator<Double>() {
             @Override
-            public int compare(Double o1, Double o2)
-            {
+            public int compare(Double o1, Double o2) {
                 return -Double.compare(o1, o2);
             }
         });
-        
+
         eigenVals = evd.getRealEigenvalues();
         eigenVecs = evd.getV();
-        for(int j = 0; j < eigenVals.length; j++)//TODO row order would be more cache friendly 
+        for (int j = 0; j < eigenVals.length; j++)//TODO row order would be more cache friendly
             RowColumnOps.divCol(eigenVecs, j, Math.sqrt(eigenVals[j]));
     }
 
     /**
      * Copy constructor
+     *
      * @param toCopy the object to copy
      */
-    protected KernelPCA(KernelPCA toCopy)
-    {
+    protected KernelPCA(KernelPCA toCopy) {
         this.dimensions = toCopy.dimensions;
         this.k = toCopy.k.clone();
         this.basisSize = toCopy.basisSize;
         this.samplingMethod = toCopy.samplingMethod;
-        if(toCopy.eigenVals != null)
+        if (toCopy.eigenVals != null)
             this.eigenVals = Arrays.copyOf(toCopy.eigenVals, toCopy.eigenVals.length);
-        if(toCopy.eigenVecs != null)
+        if (toCopy.eigenVecs != null)
             this.eigenVecs = toCopy.eigenVecs.clone();
-        if(toCopy.vecs != null)
-        {
+        if (toCopy.vecs != null) {
             this.vecs = new Vec[toCopy.vecs.length];
-            for(int i = 0; i < vecs.length; i++)
+            for (int i = 0; i < vecs.length; i++)
                 this.vecs[i] = toCopy.vecs[i].clone();
             this.rowAvg = Arrays.copyOf(toCopy.rowAvg, toCopy.rowAvg.length);
         }
         this.allAvg = toCopy.allAvg;
     }
-    
+
     @Override
-    public DataPoint transform(DataPoint dp)
-    {
+    public DataPoint transform(DataPoint dp) {
         Vec oldVec = dp.getNumericalValues();
         Vec newVec = new DenseVector(dimensions);
-        
+
         //TODO put this in a thread local object? Or hope JVM puts a large array on the stack? 
         final double[] kEvals = new double[vecs.length];
 
@@ -247,8 +232,7 @@ public class KernelPCA extends DataTransformBase
 
         tAvg /= vecs.length;
 
-        for (int i = 0; i < dimensions; i++)
-        {
+        for (int i = 0; i < dimensions; i++) {
             double val = 0;
             for (int j = 0; j < vecs.length; j++)
                 val += eigenVecs.get(j, i) * (kEvals[j] - tAvg - rowAvg[i] + allAvg);
@@ -259,29 +243,24 @@ public class KernelPCA extends DataTransformBase
     }
 
     @Override
-    public KernelPCA clone()
-    {
+    public KernelPCA clone() {
         return new KernelPCA(this);
     }
 
     /**
-     * 
      * @param k the kernel trick to use
      */
-    public void setKernel(KernelTrick k)
-    {
+    public void setKernel(KernelTrick k) {
         this.k = k;
     }
 
     /**
-     * 
      * @return the kernel trick to use
      */
-    public KernelTrick getKernel()
-    {
+    public KernelTrick getKernel() {
         return k;
     }
-    
+
     /**
      * Sets the basis size for the Kernel PCA to be learned from. Increasing the
      * basis increase the accuracy of the transform, but increased the training
@@ -289,8 +268,7 @@ public class KernelPCA extends DataTransformBase
      *
      * @param basisSize the number of basis vectors to build Kernel PCA from
      */
-    public void setBasisSize(int basisSize)
-    {
+    public void setBasisSize(int basisSize) {
         if (basisSize < 1)
             throw new IllegalArgumentException("The basis size must be positive, not " + basisSize);
         this.basisSize = basisSize;
@@ -301,8 +279,7 @@ public class KernelPCA extends DataTransformBase
      *
      * @return the number of basis vectors to use
      */
-    public int getBasisSize()
-    {
+    public int getBasisSize() {
         return basisSize;
     }
 
@@ -312,8 +289,7 @@ public class KernelPCA extends DataTransformBase
      *
      * @param dimensions the number of dimensions to project down too
      */
-    public void setDimensions(int dimensions)
-    {
+    public void setDimensions(int dimensions) {
         if (dimensions < 1)
             throw new IllegalArgumentException("The number of dimensions must be positive, not " + dimensions);
         this.dimensions = dimensions;
@@ -324,8 +300,7 @@ public class KernelPCA extends DataTransformBase
      *
      * @return the number of dimensions to project down too
      */
-    public int getDimensions()
-    {
+    public int getDimensions() {
         return dimensions;
     }
 
@@ -334,8 +309,7 @@ public class KernelPCA extends DataTransformBase
      *
      * @param method the method of selecting the basis vectors
      */
-    public void setBasisSamplingMethod(SamplingMethod method)
-    {
+    public void setBasisSamplingMethod(SamplingMethod method) {
         this.samplingMethod = method;
     }
 
@@ -344,13 +318,11 @@ public class KernelPCA extends DataTransformBase
      *
      * @return the method of selecting the basis vectors
      */
-    public SamplingMethod getBasisSamplingMethod()
-    {
+    public SamplingMethod getBasisSamplingMethod() {
         return samplingMethod;
     }
-    
-    public static Distribution guessDimensions(DataSet d)
-    {
+
+    public static Distribution guessDimensions(DataSet d) {
         return new UniformDiscrete(20, 200);
     }
 }

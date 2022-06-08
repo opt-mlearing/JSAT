@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+
 import jsat.DataSet;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.DataPoint;
@@ -46,73 +47,65 @@ import jsat.utils.IntList;
  * USA.</li>
  * </ul>
  *
- *
  * @author Edward Raff <Raff.Edward@gmail.com>
  */
-public class MDI implements TreeFeatureImportanceInference
-{
+public class MDI implements TreeFeatureImportanceInference {
     private ImpurityScore.ImpurityMeasure im;
-    
-    public MDI(ImpurityScore.ImpurityMeasure im)
-    {
+
+    public MDI(ImpurityScore.ImpurityMeasure im) {
         this.im = im;
     }
 
-    public MDI()
-    {
+    public MDI() {
         this(ImpurityScore.ImpurityMeasure.GINI);
     }
-    
+
 
     @Override
-    public <Type extends DataSet> double[] getImportanceStats(TreeLearner model, DataSet<Type> data)
-    {
+    public <Type extends DataSet> double[] getImportanceStats(TreeLearner model, DataSet<Type> data) {
         double[] features = new double[data.getNumFeatures()];
-        
-        if(!(data instanceof ClassificationDataSet))
+
+        if (!(data instanceof ClassificationDataSet))
             throw new RuntimeException("MDI currently only supports classification datasets");
-        
-        List<DataPointPair<Integer>> allData = ((ClassificationDataSet)data).getAsDPPList();
-        final int K = ((ClassificationDataSet)data).getClassSize();
+
+        List<DataPointPair<Integer>> allData = ((ClassificationDataSet) data).getAsDPPList();
+        final int K = ((ClassificationDataSet) data).getClassSize();
         ImpurityScore score = new ImpurityScore(K, im);
-        for(int i = 0; i < data.size(); i++)
-            score.addPoint(data.getWeight(i), ((ClassificationDataSet)data).getDataPointCategory(i));
-        
+        for (int i = 0; i < data.size(); i++)
+            score.addPoint(data.getWeight(i), ((ClassificationDataSet) data).getDataPointCategory(i));
+
         visit(model.getTreeNodeVisitor(), score, (ClassificationDataSet) data, IntList.range(data.size()), features, score.getSumOfWeights(), K);
-        
+
         return features;
     }
-    
-    private void visit(TreeNodeVisitor node, ImpurityScore score, ClassificationDataSet data, IntList subset, final double[] features , final double N, final int K)
-    {
-        if (node == null || node.isLeaf() )//invalid path or no split, so skip
+
+    private void visit(TreeNodeVisitor node, ImpurityScore score, ClassificationDataSet data, IntList subset, final double[] features, final double N, final int K) {
+        if (node == null || node.isLeaf())//invalid path or no split, so skip
             return;
-        
+
         double curScore = score.getScore();
         double curN = score.getSumOfWeights();
-        
+
         //working space to split data up into new subsets
         List<IntList> splitsData = new ArrayList<>(node.childrenCount());
         List<ImpurityScore> splitScores = new ArrayList<>(node.childrenCount());
         splitsData.add(subset);
         splitScores.add(score);
-        for(int i = 0; i < node.childrenCount()-1; i++)
-        {
+        for (int i = 0; i < node.childrenCount() - 1; i++) {
             splitsData.add(new IntList());
             splitScores.add(new ImpurityScore(K, im));
         }
-        
+
         //loop through and split up our data
-        for(ListIterator<Integer> iter = subset.listIterator(); iter.hasNext();)
-        {
-	    int indx = iter.next();
+        for (ListIterator<Integer> iter = subset.listIterator(); iter.hasNext(); ) {
+            int indx = iter.next();
             final int tc = data.getDataPointCategory(indx);
             DataPoint dp = data.getDataPoint(indx);
-	    double w = data.getWeight(indx);
+            double w = data.getWeight(indx);
             int path = node.getPath(dp);
-            if(path < 0)//NaN will cause -1
+            if (path < 0)//NaN will cause -1
                 score.removePoint(w, tc);
-            else if(path > 0)//0 will be cur data and score obj, else we move to right location
+            else if (path > 0)//0 will be cur data and score obj, else we move to right location
             {
                 score.removePoint(w, tc);
                 splitScores.get(path).addPoint(w, tc);
@@ -120,19 +113,19 @@ public class MDI implements TreeFeatureImportanceInference
                 iter.remove();
             }
         }
-        
+
         double chageInImp = curScore;
-        for(ImpurityScore s : splitScores)
-            chageInImp -= s.getScore()*(s.getSumOfWeights()/(1e-5+curN));
-        
-        
+        for (ImpurityScore s : splitScores)
+            chageInImp -= s.getScore() * (s.getSumOfWeights() / (1e-5 + curN));
+
+
         Collection<Integer> featuresUsed = node.featuresUsed();
         for (int feature : featuresUsed)
-            features[feature] += chageInImp*curN/N;
+            features[feature] += chageInImp * curN / N;
 
         //now visit our children
-        for(int path = 0; path < splitScores.size(); path++)
+        for (int path = 0; path < splitScores.size(); path++)
             visit(node.getChild(path), splitScores.get(path), data, splitsData.get(path), features, N, K);
     }
-    
+
 }

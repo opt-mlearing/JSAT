@@ -1,10 +1,13 @@
 package jsat.classifiers.linear;
 
 import java.util.List;
+
 import jsat.classifiers.ClassificationDataSet;
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;
+
 import static java.lang.Math.*;
+
 import jsat.linear.IndexValue;
 
 /**
@@ -13,13 +16,11 @@ import jsat.linear.IndexValue;
  *
  * @author Edward Raff
  */
-public class LinearTools
-{
+public class LinearTools {
 
-    private LinearTools()
-    {
+    private LinearTools() {
     }
-    
+
 
     /**
      * If the linear model performs logistic regression regularized by &lambda;
@@ -32,10 +33,9 @@ public class LinearTools
      * &lambda; for each CV set.
      *
      * @param cds the data set that the model would be trained from
-     * @return the smallest value of &lambda; that should produce all zeros. 
+     * @return the smallest value of &lambda; that should produce all zeros.
      */
-    public static double maxLambdaLogisticL1(ClassificationDataSet cds)
-    {
+    public static double maxLambdaLogisticL1(ClassificationDataSet cds) {
         /**
          * This code was ripped out/modified from NewGLMNET. It follows the
          * strategy laid out in Schmidt, M., Fung, G.,&amp;Rosaless, R. (2009).
@@ -49,65 +49,57 @@ public class LinearTools
         final double D_part_i = 0.5;
         final int n = cds.getNumNumericalVars();
         Vec delta_L = new DenseVector(n);
-        if(cds.rowMajor())
-        {
+        if (cds.rowMajor()) {
             List<Vec> X = cds.getDataVectors();
-            for (int i = 0; i < X.size(); i++)
-            {
+            for (int i = 0; i < X.size(); i++) {
                 double y_i = cds.getDataPointCategory(i) * 2 - 1;
                 Vec x = X.get(i);
                 delta_L.mutableAdd(D_part_i * y_i, x);
             }
-        }
-        else
-        {
-	    Vec[] cols = cds.getNumericColumns();
-            for(int j = 0; j < cds.getNumNumericalVars(); j++)
-            {
+        } else {
+            Vec[] cols = cds.getNumericColumns();
+            for (int j = 0; j < cds.getNumNumericalVars(); j++) {
                 Vec X_j = cols[j];
-                for(IndexValue iv : X_j)
-                {
+                for (IndexValue iv : X_j) {
                     int i = iv.getIndex();
                     double y_i = cds.getDataPointCategory(i) * 2 - 1;
-                    delta_L.increment(j, D_part_i*y_i*iv.getValue());
+                    delta_L.increment(j, D_part_i * y_i * iv.getValue());
                 }
             }
         }
         return max(abs(delta_L.max()), abs(delta_L.min())) / (cds.size());
     }
-    
+
     /**
      * Many linear classifiers can be phrased in two equivalent forms, that only change the notation for the regularized. These forms are:<br>
      * C <big>&sum;</big><sub>i</sub> &#x2113;(w,x<sub>i</sub>) + &Omega;(w) <br>
      * and<br>
      * 1/N <big>&sum;</big><sub>i</sub> &#x2113;(w,x<sub>i</sub>) + &lambda; &Omega;(w) <br>
-     * 
+     * <p>
      * This method converts the regularization parameter &lambda; to the form used as C
-     * 
+     *
      * @param lambda the regularization parameter &lambda;
-     * @param N the number of data points in the training set 
-     * @return 
+     * @param N      the number of data points in the training set
+     * @return
      */
-    public static double lambda2C(double lambda, double N)
-    {
-        return 1/(lambda*N);
+    public static double lambda2C(double lambda, double N) {
+        return 1 / (lambda * N);
     }
-    
-/**
+
+    /**
      * Many linear classifiers can be phrased in two equivalent forms, that only change the notation for the regularized. These forms are:<br>
      * C <big>&sum;</big><sub>i</sub> &#x2113;(w,x<sub>i</sub>) + &Omega;(w) <br>
      * and<br>
      * 1/N <big>&sum;</big><sub>i</sub> &#x2113;(w,x<sub>i</sub>) + &lambda; &Omega;(w) <br>
-     * 
+     * <p>
      * This method converts the regularization parameter C to the form used as &lambda;
-     * 
+     *
      * @param C the regularization parameter C
-     * @param N the number of data points in the training set 
-     * @return 
+     * @param N the number of data points in the training set
+     * @return
      */
-    public static double c2Lambda(double C, double N)
-    {
-        return 1/(C*N);
+    public static double c2Lambda(double C, double N) {
+        return 1 / (C * N);
     }
-    
+
 }

@@ -18,6 +18,7 @@ package jsat.datatransform.kernel;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import jsat.FixedProblems;
 import jsat.classifiers.*;
 import jsat.classifiers.svm.DCDs;
@@ -31,47 +32,39 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Edward Raff
  */
-public class KernelPCATest
-{
+public class KernelPCATest {
     //Test uses Transform to solve a problem that is not linearly seprable in the original space
-    public KernelPCATest()
-    {
+    public KernelPCATest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
-    
+
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
-    
+
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     @Test
-    public void testTrainC_ClassificationDataSet_ExecutorService()
-    {
+    public void testTrainC_ClassificationDataSet_ExecutorService() {
         System.out.println("trainC");
-        
-        for(Nystrom.SamplingMethod sampMethod : Nystrom.SamplingMethod.values())
-        {
-            DataModelPipeline instance = new DataModelPipeline((Classifier)new DCDs(), new KernelPCA(new RBFKernel(0.5), 20, 100, sampMethod)); 
+
+        for (Nystrom.SamplingMethod sampMethod : Nystrom.SamplingMethod.values()) {
+            DataModelPipeline instance = new DataModelPipeline((Classifier) new DCDs(), new KernelPCA(new RBFKernel(0.5), 20, 100, sampMethod));
 
             ClassificationDataSet train = FixedProblems.getInnerOuterCircle(200, RandomUtil.getRandom());
             ClassificationDataSet test = FixedProblems.getInnerOuterCircle(100, RandomUtil.getRandom());
@@ -85,14 +78,12 @@ public class KernelPCATest
     }
 
     @Test
-    public void testTrainC_ClassificationDataSet()
-    {
+    public void testTrainC_ClassificationDataSet() {
         System.out.println("trainC");
 
-        for(Nystrom.SamplingMethod sampMethod : Nystrom.SamplingMethod.values())
-        {
-            DataModelPipeline instance = new DataModelPipeline((Classifier)new DCDs(), new KernelPCA(new RBFKernel(0.5), 20, 100, sampMethod)); 
-        
+        for (Nystrom.SamplingMethod sampMethod : Nystrom.SamplingMethod.values()) {
+            DataModelPipeline instance = new DataModelPipeline((Classifier) new DCDs(), new KernelPCA(new RBFKernel(0.5), 20, 100, sampMethod));
+
             ClassificationDataSet train = FixedProblems.getInnerOuterCircle(200, RandomUtil.getRandom());
             ClassificationDataSet test = FixedProblems.getInnerOuterCircle(100, RandomUtil.getRandom());
 
@@ -105,12 +96,11 @@ public class KernelPCATest
     }
 
     @Test
-    public void testClone()
-    {
+    public void testClone() {
         System.out.println("clone");
 
-        DataModelPipeline instance = new DataModelPipeline((Classifier)new DCDs(), new KernelPCA(new RBFKernel(0.5), 20, 100, Nystrom.SamplingMethod.KMEANS)); 
-        
+        DataModelPipeline instance = new DataModelPipeline((Classifier) new DCDs(), new KernelPCA(new RBFKernel(0.5), 20, 100, Nystrom.SamplingMethod.KMEANS));
+
         ClassificationDataSet t1 = FixedProblems.getCircles(500, 0.0, RandomUtil.getRandom(), 1.0, 4.0);
         ClassificationDataSet t2 = FixedProblems.getCircles(500, 0.0, RandomUtil.getRandom(), 2.0, 10.0);
 
@@ -118,9 +108,9 @@ public class KernelPCATest
 
         instance.train(t1);
 
-        
+
         DataModelPipeline result = instance.clone();
-        
+
         for (int i = 0; i < t1.size(); i++)
             assertEquals(t1.getDataPointCategory(i), result.classify(t1.getDataPoint(i)).mostLikely());
         result.train(t2);
@@ -132,5 +122,5 @@ public class KernelPCATest
             assertEquals(t2.getDataPointCategory(i), result.classify(t2.getDataPoint(i)).mostLikely());
 
     }
-    
+
 }

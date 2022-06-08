@@ -1,5 +1,5 @@
 /*
- * This code contributed in the public domain. 
+ * This code contributed in the public domain.
  */
 package jsat.datatransform;
 
@@ -13,8 +13,7 @@ import jsat.classifiers.DataPoint;
  *
  * @author Edward Raff
  */
-public interface FixedDataTransform
-{
+public interface FixedDataTransform {
 
     /**
      * Returns a new data point that is a transformation of the original data

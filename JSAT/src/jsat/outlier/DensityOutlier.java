@@ -1,22 +1,7 @@
-/*
- * Copyright (C) 2018 Edward Raff
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package jsat.outlier;
 
 import java.util.Arrays;
+
 import jsat.DataSet;
 import jsat.classifiers.DataPoint;
 import jsat.distributions.multivariate.MultivariateDistribution;
@@ -28,8 +13,7 @@ import jsat.utils.concurrent.ParallelUtils;
  *
  * @author Edward Raff
  */
-public class DensityOutlier implements Outlier
-{
+public class DensityOutlier implements Outlier {
     private double outlierFraction;
     private MultivariateDistribution density;
     /**
@@ -37,76 +21,64 @@ public class DensityOutlier implements Outlier
      * this threshold will be considered an outlier.
      */
     private double threshold;
-    
-    public DensityOutlier()
-    {
+
+    public DensityOutlier() {
         this(0.05);
     }
-    
-    public DensityOutlier(double outlierFraction)
-    {
+
+    public DensityOutlier(double outlierFraction) {
         this(outlierFraction, new NormalMR());
     }
 
-    public DensityOutlier(double outlierFraction, MultivariateDistribution density)
-    {
+    public DensityOutlier(double outlierFraction, MultivariateDistribution density) {
         this.outlierFraction = outlierFraction;
         this.density = density;
     }
-    
-    public DensityOutlier(DensityOutlier toCopy)
-    {
+
+    public DensityOutlier(DensityOutlier toCopy) {
         this(toCopy.outlierFraction, toCopy.density.clone());
         this.threshold = toCopy.threshold;
     }
 
-    public void setOutlierFraction(double outlierFraction)
-    {
+    public void setOutlierFraction(double outlierFraction) {
         this.outlierFraction = outlierFraction;
     }
 
-    public double getOutlierFraction()
-    {
+    public double getOutlierFraction() {
         return outlierFraction;
     }
 
-    public void setDensityDistribution(MultivariateDistribution density)
-    {
+    public void setDensityDistribution(MultivariateDistribution density) {
         this.density = density;
     }
 
-    public MultivariateDistribution getDensityDistribution()
-    {
+    public MultivariateDistribution getDensityDistribution() {
         return density;
     }
-    
-    
-    
+
+
     @Override
-    public void fit(DataSet d, boolean parallel)
-    {
+    public void fit(DataSet d, boolean parallel) {
         density.setUsingData(d, parallel);
         double[] scores = new double[d.size()];
-        ParallelUtils.run(parallel, scores.length, (start, end)->
+        ParallelUtils.run(parallel, scores.length, (start, end) ->
         {
-            for(int i = start; i < end; i++)
+            for (int i = start; i < end; i++)
                 scores[i] = density.logPdf(d.getDataPoint(i).getNumericalValues());
         });
         Arrays.sort(scores);
-        threshold = scores[(int)(scores.length*outlierFraction)];
+        threshold = scores[(int) (scores.length * outlierFraction)];
     }
 
     @Override
-    public double score(DataPoint x)
-    {
+    public double score(DataPoint x) {
         double logPDF = density.logPdf(x.getNumericalValues());
         return logPDF - threshold;
     }
 
     @Override
-    protected DensityOutlier clone() throws CloneNotSupportedException
-    {
+    protected DensityOutlier clone() throws CloneNotSupportedException {
         return new DensityOutlier(this);
     }
-    
+
 }

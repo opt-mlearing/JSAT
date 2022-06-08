@@ -6,12 +6,11 @@ import jsat.distributions.Distribution;
 import jsat.regression.RegressionDataSet;
 
 /**
- * A double parameter that may be altered. 
- * 
+ * A double parameter that may be altered.
+ *
  * @author Edward Raff
  */
-public abstract class DoubleParameter extends Parameter
-{
+public abstract class DoubleParameter extends Parameter {
 
     private static final long serialVersionUID = 4132422231433472554L;
 
@@ -21,11 +20,12 @@ public abstract class DoubleParameter extends Parameter
      * @return the value for this parameter.
      */
     abstract public double getValue();
-    
+
     /**
-     * Sets the value for this parameter. 
-     * @return <tt>true</tt> if the value was set, <tt>false</tt> if the value 
-     * was invalid, and thus ignored. 
+     * Sets the value for this parameter.
+     *
+     * @return <tt>true</tt> if the value was set, <tt>false</tt> if the value
+     * was invalid, and thus ignored.
      */
     abstract public boolean setValue(double val);
 
@@ -40,18 +40,16 @@ public abstract class DoubleParameter extends Parameter
      * guessing is not supported.
      *
      * @param data the data with which we want a reasonable guess for this
-     * parameter
+     *             parameter
      * @return a distribution that represents a reasonable guess of a good value
      * for this parameter given the input data
      */
-    public Distribution getGuess(DataSet data)
-    {
+    public Distribution getGuess(DataSet data) {
         return null;
     }
-    
+
     @Override
-    public String getValueString() 
-    {
+    public String getValueString() {
         return Double.toString(getValue());
     }
 }

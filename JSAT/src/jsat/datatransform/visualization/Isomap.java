@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import jsat.DataSet;
 import jsat.SimpleDataSet;
 import jsat.linear.*;
@@ -50,7 +51,7 @@ import jsat.utils.concurrent.ParallelUtils;
  * very large values, hoping to preserve the farther distances in the given
  * dataset while maintaining local structure.<br>
  * <br>
- *
+ * <p>
  * See:<br>
  * <ul>
  * <li>Tenenbaum, J. B., Silva, V. De, & Langford, J. C. (2000). <i>A Global
@@ -64,8 +65,7 @@ import jsat.utils.concurrent.ParallelUtils;
  *
  * @author Edward Raff <Raff.Edward@gmail.com>
  */
-public class Isomap implements VisualizationTransform
-{
+public class Isomap implements VisualizationTransform {
     private DistanceMetric dm = new EuclideanDistance();
     private VectorCollection<VecPaired<Vec, Integer>> vc = new DefaultVectorCollection<>();
     private int searchNeighbors = 15;
@@ -75,78 +75,67 @@ public class Isomap implements VisualizationTransform
     /**
      *
      */
-    public Isomap()
-    {
+    public Isomap() {
         this(15, false);
     }
 
     /**
-     *
      * @param searchNeighbors the number of nearest neighbors to consider
      */
-    public Isomap(int searchNeighbors)
-    {
+    public Isomap(int searchNeighbors) {
         this(searchNeighbors, false);
     }
 
     /**
-     * 
      * @param searchNeighbors the number of nearest neighbors to consider
-     * @param c_isomap {@code true} to use the C-Isomap extension, {@code false}
-     * for normal Isomap.
+     * @param c_isomap        {@code true} to use the C-Isomap extension, {@code false}
+     *                        for normal Isomap.
      */
-    public Isomap(int searchNeighbors, boolean c_isomap)
-    {
+    public Isomap(int searchNeighbors, boolean c_isomap) {
         setNeighbors(searchNeighbors);
         setCIsomap(c_isomap);
     }
-    
+
     /**
      * Set the number of neighbors to consider for the initial graph in Isomap
+     *
      * @param searchNeighbors the number of nearest neighbors to consider
      */
-    public void setNeighbors(int searchNeighbors)
-    {
-        if(searchNeighbors < 2)
+    public void setNeighbors(int searchNeighbors) {
+        if (searchNeighbors < 2)
             throw new IllegalArgumentException("number of neighbors considered must be at least 2, not " + searchNeighbors);
         this.searchNeighbors = searchNeighbors;
     }
 
     /**
-     * 
      * @return the number of neighbors used when creating the initial graph
      */
-    public int getNeighbors()
-    {
+    public int getNeighbors() {
         return searchNeighbors;
     }
-    
+
     /**
      * Controls whether the C-Isomap extension is used. If set true, the initial
      * distances will also be scaled based on the density of the region between
      * the points. If false, normal Isomap will be used.
      *
      * @param c_isomap {@code true} to use the C-Isomap extension, {@code false}
-     * for normal Isomap.
+     *                 for normal Isomap.
      */
-    public void setCIsomap(boolean c_isomap)
-    {
+    public void setCIsomap(boolean c_isomap) {
         this.c_isomap = c_isomap;
     }
 
     /**
-     *
      * @return {@code true} if the C-Isomap extension is in use, {@code false}
      * for normal Isomap.
      */
-    public boolean isCIsomap()
-    {
+    public boolean isCIsomap() {
         return c_isomap;
     }
-    
+
     @Override
-    public <Type extends DataSet> Type transform(DataSet<Type> d, boolean parallel)
-    {
+    public <Type extends DataSet> Type transform(DataSet<Type> d, boolean parallel) {
         final int N = d.size();
         final Matrix delta = new DenseMatrix(N, N);
         for (int i = 0; i < N; i++)
@@ -156,91 +145,85 @@ public class Isomap implements VisualizationTransform
                 else
                     delta.set(i, j, Double.MAX_VALUE);
 
-        
+
         final List<VecPaired<Vec, Integer>> vecs = new ArrayList<>(N);
-        for(int i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             vecs.add(new VecPaired<>(d.getDataPoint(i).getNumericalValues(), i));
         vc.build(parallel, vecs, dm);
         final List<Double> cache = dm.getAccelerationCache(vecs, parallel);
-                
-        final int knn = searchNeighbors+1;//+1 b/c we are closest to ourselves
-        
+
+        final int knn = searchNeighbors + 1;//+1 b/c we are closest to ourselves
+
         //bleh, ugly generics...
         final List<List<? extends VecPaired<VecPaired<Vec, Integer>, Double>>> neighborGraph = new ArrayList<>();
         for (int i = 0; i < N; i++)
             neighborGraph.add(null);
-            
+
         final double[] avgNeighborDist = new double[N];
-        
+
         //do knn search and store results so we can do distances
-        ParallelUtils.run(parallel, N, (i)->
+        ParallelUtils.run(parallel, N, (i) ->
         {
             List<? extends VecPaired<VecPaired<Vec, Integer>, Double>> neighbors = vc.search(vecs.get(i).getVector(), knn);
             neighborGraph.set(i, neighbors);
             //Compute stats that may be used for c-isomap version
-            for (int z = 1; z < neighbors.size(); z++)
-            {
+            for (int z = 1; z < neighbors.size(); z++) {
                 VecPaired<VecPaired<Vec, Integer>, Double> neighbor = neighbors.get(z);
                 double dist = neighbor.getPair();
                 avgNeighborDist[i] += dist;
             }
-            avgNeighborDist[i] /= (neighbors.size()-1);
+            avgNeighborDist[i] /= (neighbors.size() - 1);
         });
-        
-        if(c_isomap)
-        {
+
+        if (c_isomap) {
             int i = 0;
-            for(List<? extends VecPaired<VecPaired<Vec, Integer>, Double>> neighbors : neighborGraph)
-            {
-                for(VecPaired<VecPaired<Vec, Integer>, Double> neighbor : neighbors)
-                    neighbor.setPair(neighbor.getPair()/Math.sqrt(avgNeighborDist[neighbor.getVector().getPair()]+avgNeighborDist[i]+1e-6));
+            for (List<? extends VecPaired<VecPaired<Vec, Integer>, Double>> neighbors : neighborGraph) {
+                for (VecPaired<VecPaired<Vec, Integer>, Double> neighbor : neighbors)
+                    neighbor.setPair(neighbor.getPair() / Math.sqrt(avgNeighborDist[neighbor.getVector().getPair()] + avgNeighborDist[i] + 1e-6));
                 i++;
             }
         }
-        
-        ParallelUtils.run(parallel, N, (k)->
+
+        ParallelUtils.run(parallel, N, (k) ->
         {
             double[] tmp_dist = dijkstra(neighborGraph, k);
-            for (int i = 0; i < N; i++)
-            {
+            for (int i = 0; i < N; i++) {
                 tmp_dist[i] = Math.min(tmp_dist[i], delta.get(k, i));
                 delta.set(i, k, tmp_dist[i]);
                 delta.set(k, i, tmp_dist[i]);
             }
         });
-        
+
         //lets check for any disjoint groupings, replace them with something reasonable
         //we will use the largest obtainable distance to be an offset for our infinity distances
         double largest_natural_dist_tmp = 0;
         for (int i = 0; i < N; i++)
             for (int j = i + 1; j < N; j++)
-                if(delta.get(i, j) < Double.MAX_VALUE)
+                if (delta.get(i, j) < Double.MAX_VALUE)
                     largest_natural_dist_tmp = Math.max(largest_natural_dist_tmp, delta.get(i, j));
         final double largest_natural_dist = largest_natural_dist_tmp;
-        
-        ParallelUtils.run(parallel, N, (i)->
+
+        ParallelUtils.run(parallel, N, (i) ->
         {
-            for (int j = i + 1; j < N; j++)
-            {
+            for (int j = i + 1; j < N; j++) {
                 double d_ij = delta.get(i, j);
                 if (d_ij >= Double.MAX_VALUE)//replace with the normal distance + 1 order of magnitude? 
                 {
-                    d_ij = 10*dm.dist(i, j, vecs, cache)+1.5*largest_natural_dist;
+                    d_ij = 10 * dm.dist(i, j, vecs, cache) + 1.5 * largest_natural_dist;
                     delta.set(i, j, d_ij);
                     delta.set(j, i, d_ij);
                 }
             }
         });
-        
+
         SimpleDataSet emedded = mds.transform(delta, parallel);
-        
+
         DataSet<Type> transformed = d.shallowClone();
         transformed.replaceNumericFeatures(emedded.getDataVectors());
         return (Type) transformed;
     }
 
-    private double[] dijkstra(List<List<? extends VecPaired<VecPaired<Vec, Integer>, Double>>> neighborGraph, int sourceIndex)
-    {
+    private double[] dijkstra(List<List<? extends VecPaired<VecPaired<Vec, Integer>, Double>>> neighborGraph, int sourceIndex) {
         //TODO generalize and move this out into some other class as a static method 
         final int N = neighborGraph.size();
         double[] dist = new double[N];
@@ -253,24 +236,21 @@ public class Isomap implements VisualizationTransform
             nodes.add(null);
         nodes.set(sourceIndex, Q.insert(sourceIndex, dist[sourceIndex]));
 
-        while (Q.size() > 0)
-        {
+        while (Q.size() > 0) {
             FibHeap.FibNode<Integer> u = Q.removeMin();
             int u_indx = u.getValue();
 
             List<? extends VecPaired<VecPaired<Vec, Integer>, Double>> neighbors = neighborGraph.get(u_indx);
-            for (int z = 1; z < neighbors.size(); z++)
-            {
+            for (int z = 1; z < neighbors.size(); z++) {
                 VecPaired<VecPaired<Vec, Integer>, Double> neighbor = neighbors.get(z);
                 int j = neighbor.getVector().getPair();
                 double u_j_dist = neighbor.getPair();
                 double alt = dist[u_indx] + u_j_dist;
 
-                if (alt < dist[j])
-                {
+                if (alt < dist[j]) {
                     dist[j] = alt;
                     //prev[j] ← u
-                    if(nodes.get(j) == null)
+                    if (nodes.get(j) == null)
                         nodes.set(j, Q.insert(j, alt));
                     else
                         Q.decreaseKey(nodes.get(j), alt);
@@ -280,16 +260,14 @@ public class Isomap implements VisualizationTransform
 
         return dist;
     }
-    
+
     @Override
-    public int getTargetDimension()
-    {
+    public int getTargetDimension() {
         return mds.getTargetDimension();
     }
 
     @Override
-    public boolean setTargetDimension(int target)
-    {
+    public boolean setTargetDimension(int target) {
         return mds.setTargetDimension(target);
     }
 }

@@ -18,6 +18,7 @@ package jsat.parameters;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import jsat.classifiers.CategoricalResults;
 import jsat.classifiers.Classifier;
 import jsat.classifiers.DataPoint;
@@ -36,8 +37,7 @@ import jsat.regression.evaluation.RegressionScore;
  *
  * @author Edward Raff
  */
-abstract public class ModelSearch implements Classifier, Regressor
-{
+abstract public class ModelSearch implements Classifier, Regressor {
     protected Classifier baseClassifier;
     protected Classifier trainedClassifier;
 
@@ -74,8 +74,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      */
     protected boolean reuseSameCVFolds = true;
 
-    public ModelSearch(Regressor baseRegressor, int folds)
-    {
+    public ModelSearch(Regressor baseRegressor, int folds) {
         if (!(baseRegressor instanceof Parameterized))
             throw new FailedToFitException("Given regressor does not support parameterized alterations");
         this.baseRegressor = baseRegressor;
@@ -85,8 +84,7 @@ abstract public class ModelSearch implements Classifier, Regressor
         this.folds = folds;
     }
 
-    public ModelSearch(Classifier baseClassifier, int folds)
-    {
+    public ModelSearch(Classifier baseClassifier, int folds) {
         if (!(baseClassifier instanceof Parameterized))
             throw new FailedToFitException("Given classifier does not support parameterized alterations");
         this.baseClassifier = baseClassifier;
@@ -98,18 +96,15 @@ abstract public class ModelSearch implements Classifier, Regressor
 
     /**
      * Copy constructor
+     *
      * @param toCopy the object to copy
      */
-    public ModelSearch(ModelSearch toCopy)
-    {
-        if (toCopy.baseClassifier != null)
-        {
+    public ModelSearch(ModelSearch toCopy) {
+        if (toCopy.baseClassifier != null) {
             this.baseClassifier = toCopy.baseClassifier.clone();
             if (this.baseClassifier instanceof Regressor)
                 this.baseRegressor = (Regressor) this.baseClassifier;
-        }
-        else
-        {
+        } else {
             this.baseRegressor = toCopy.baseRegressor.clone();
             if (this.baseRegressor instanceof Classifier)
                 this.baseClassifier = (Classifier) this.baseRegressor;
@@ -143,22 +138,19 @@ abstract public class ModelSearch implements Classifier, Regressor
      * obtained.
      *
      * @param trainInParallel {@code true} to get parallelism from training many
-     * models at the same time, {@code false} to get parallelism from getting
-     * the model's implicit parallelism.
+     *                        models at the same time, {@code false} to get parallelism from getting
+     *                        the model's implicit parallelism.
      */
-    public void setTrainModelsInParallel(boolean trainInParallel)
-    {
+    public void setTrainModelsInParallel(boolean trainInParallel) {
         this.trainModelsInParallel = trainInParallel;
     }
 
     /**
-     *
      * @return {@code true} if parallelism is obtained from training many models
      * at the same time, {@code false} if parallelism is obtained from using the
      * model's implicit parallelism.
      */
-    public boolean isTrainModelsInParallel()
-    {
+    public boolean isTrainModelsInParallel() {
         return trainModelsInParallel;
     }
 
@@ -171,20 +163,17 @@ abstract public class ModelSearch implements Classifier, Regressor
      * combination is best.
      *
      * @param trainFinalModel {@code true} to train the final model after grid
-     * search, {@code false} to not do that.
+     *                        search, {@code false} to not do that.
      */
-    public void setTrainFinalModel(boolean trainFinalModel)
-    {
+    public void setTrainFinalModel(boolean trainFinalModel) {
         this.trainFinalModel = trainFinalModel;
     }
 
     /**
-     *
      * @return {@code true} to train the final model after grid search,
      * {@code false} to not do that.
      */
-    public boolean isTrainFinalModel()
-    {
+    public boolean isTrainFinalModel() {
         return trainFinalModel;
     }
 
@@ -194,21 +183,18 @@ abstract public class ModelSearch implements Classifier, Regressor
      * will be used for every parameter combination.
      *
      * @param reuseSameSplit {@code true} if the same split is re-used for every
-     * combination, {@code false} if a new CV set is used for every parameter
-     * combination.
+     *                       combination, {@code false} if a new CV set is used for every parameter
+     *                       combination.
      */
-    public void setReuseSameCVFolds(boolean reuseSameSplit)
-    {
+    public void setReuseSameCVFolds(boolean reuseSameSplit) {
         this.reuseSameCVFolds = reuseSameSplit;
     }
 
     /**
-     *
      * @return {@code true} if the same split is re-used for every combination,
      * {@code false} if a new CV set is used for every parameter combination.
      */
-    public boolean isReuseSameCVFolds()
-    {
+    public boolean isReuseSameCVFolds() {
         return reuseSameCVFolds;
     }
 
@@ -219,8 +205,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      *
      * @return the original classifier object given
      */
-    public Classifier getBaseClassifier()
-    {
+    public Classifier getBaseClassifier() {
         return baseClassifier;
     }
 
@@ -228,12 +213,11 @@ abstract public class ModelSearch implements Classifier, Regressor
      * Returns the resultant classifier trained on the whole data set after
      * performing parameter tuning.
      *
-     * @return the trained classifier after a call to      {@link #train(jsat.regression.RegressionDataSet, 
+     * @return the trained classifier after a call to      {@link #train(jsat.regression.RegressionDataSet,
      * java.util.concurrent.ExecutorService) }, or null if it has not been
      * trained.
      */
-    public Classifier getTrainedClassifier()
-    {
+    public Classifier getTrainedClassifier() {
         return trainedClassifier;
     }
 
@@ -244,8 +228,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      *
      * @return the original regressor object given
      */
-    public Regressor getBaseRegressor()
-    {
+    public Regressor getBaseRegressor() {
         return baseRegressor;
     }
 
@@ -253,12 +236,11 @@ abstract public class ModelSearch implements Classifier, Regressor
      * Returns the resultant regressor trained on the whole data set after
      * performing parameter tuning.
      *
-     * @return the trained regressor after a call to      {@link #train(jsat.regression.RegressionDataSet, 
+     * @return the trained regressor after a call to      {@link #train(jsat.regression.RegressionDataSet,
      * java.util.concurrent.ExecutorService) }, or null if it has not been
      * trained.
      */
-    public Regressor getTrainedRegressor()
-    {
+    public Regressor getTrainedRegressor() {
         return trainedRegressor;
     }
 
@@ -268,8 +250,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      *
      * @param classifierTargetScore the score to optimize via grid search
      */
-    public void setClassificationTargetScore(ClassificationScore classifierTargetScore)
-    {
+    public void setClassificationTargetScore(ClassificationScore classifierTargetScore) {
         this.classificationTargetScore = classifierTargetScore;
     }
 
@@ -280,8 +261,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      * @return the classification score that is trying to be optimized via grid
      * search
      */
-    public ClassificationScore getClassificationTargetScore()
-    {
+    public ClassificationScore getClassificationTargetScore() {
         return classificationTargetScore;
     }
 
@@ -291,8 +271,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      *
      * @param regressionTargetScore
      */
-    public void setRegressionTargetScore(RegressionScore regressionTargetScore)
-    {
+    public void setRegressionTargetScore(RegressionScore regressionTargetScore) {
         this.regressionTargetScore = regressionTargetScore;
     }
 
@@ -303,8 +282,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      * @return the regression score that is trying to be optimized via grid
      * search
      */
-    public RegressionScore getRegressionTargetScore()
-    {
+    public RegressionScore getRegressionTargetScore() {
         return regressionTargetScore;
     }
 
@@ -316,8 +294,7 @@ abstract public class ModelSearch implements Classifier, Regressor
      * @return the parameter object in question
      * @throws IllegalArgumentException if the name is not found
      */
-    protected Parameter getParameterByName(String name) throws IllegalArgumentException
-    {
+    protected Parameter getParameterByName(String name) throws IllegalArgumentException {
         Parameter param;
         if (baseClassifier != null)
             param = ((Parameterized) baseClassifier).getParameter(name);
@@ -329,24 +306,21 @@ abstract public class ModelSearch implements Classifier, Regressor
     }
 
     @Override
-    public CategoricalResults classify(DataPoint data)
-    {
+    public CategoricalResults classify(DataPoint data) {
         if (trainedClassifier == null)
             throw new UntrainedModelException("Model has not yet been trained");
         return trainedClassifier.classify(data);
     }
 
     @Override
-    public double regress(DataPoint data)
-    {
+    public double regress(DataPoint data) {
         if (trainedRegressor == null)
             throw new UntrainedModelException("Model has not yet been trained");
         return trainedRegressor.regress(data);
     }
 
     @Override
-    public boolean supportsWeightedData()
-    {
+    public boolean supportsWeightedData() {
         return baseClassifier != null ? baseClassifier.supportsWeightedData() : baseRegressor.supportsWeightedData();
     }
 

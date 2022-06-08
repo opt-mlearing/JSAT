@@ -17,19 +17,16 @@
 package jsat.linear.vectorcollection;
 
 /**
- *
  * @author Edward Raff
  */
-public interface ScoreDT
-{
+public interface ScoreDT {
     /**
-     * 
      * @param query
      * @param ref
-     * @return {@link Double#POSITIVE_INFINITY} if the node should be pruned. 
+     * @return {@link Double#POSITIVE_INFINITY} if the node should be pruned.
      */
     public double score(IndexNode ref, IndexNode query);
-    
+
     /**
      * This method re-scores a given reference query node pair. By default this
      * simply returns the original score that was given and does no computation.
@@ -41,14 +38,13 @@ public interface ScoreDT
      * @param ref
      * @param query
      * @param origScore
-     * @return 
+     * @return
      */
-    default double score(IndexNode ref, IndexNode query, double origScore)
-    {
-        if(origScore < 0)
+    default double score(IndexNode ref, IndexNode query, double origScore) {
+        if (origScore < 0)
             return score(ref, query);
         else
             return origScore;
     }
-    
+
 }

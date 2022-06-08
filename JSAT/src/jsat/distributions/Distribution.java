@@ -18,6 +18,7 @@ package jsat.distributions;
 
 import java.io.Serializable;
 import java.util.Random;
+
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;
 import jsat.math.Function;
@@ -25,12 +26,11 @@ import jsat.math.Function1D;
 import jsat.math.rootfinding.Zeroin;
 
 /**
- * Base distribution class for distributions that have only one input. 
- * 
+ * Base distribution class for distributions that have only one input.
+ *
  * @author Edward Raff
  */
-public abstract class Distribution implements Cloneable, Serializable
-{
+public abstract class Distribution implements Cloneable, Serializable {
 
     /**
      * Computes the value of the Cumulative Density Function (CDF) at the given
@@ -50,8 +50,7 @@ public abstract class Distribution implements Cloneable, Serializable
      * @param p the probability value
      * @return the value such that the CDF would return <tt>p</tt>
      */
-    public double invCdf(double p)
-    {
+    public double invCdf(double p) {
         if (p < 0 || p > 1)
             throw new ArithmeticException("Value of p must be in the range [0,1], not " + p);
         double a = Double.isInfinite(min()) ? Double.MIN_VALUE : min();
@@ -73,51 +72,49 @@ public abstract class Distribution implements Cloneable, Serializable
      *
      * @return the median value of the distribution
      */
-    public double median()
-    {
+    public double median() {
         return invCdf(0.5);
     }
-    
+
     /**
-     * Computes the mode of the distribution. Not all distributions have a mode for all parameter values. 
-     * {@link Double#NaN NaN} may be returned if the mode is not defined for the current values of the 
-     * distribution. 
-     * 
+     * Computes the mode of the distribution. Not all distributions have a mode for all parameter values.
+     * {@link Double#NaN NaN} may be returned if the mode is not defined for the current values of the
+     * distribution.
+     *
      * @return the mode of the distribution
      */
     abstract public double mode();
-    
+
     /**
-     * Computes the variance of the distribution. Not all distributions have a 
-     * finite variance for all parameter values. {@link Double#NaN NaN} may be 
-     * returned if the variance is not defined for the current values of the distribution. 
+     * Computes the variance of the distribution. Not all distributions have a
+     * finite variance for all parameter values. {@link Double#NaN NaN} may be
+     * returned if the variance is not defined for the current values of the distribution.
      * {@link Double#POSITIVE_INFINITY Infinity} is a possible value to be returned
-     * by some distributions. 
-     * 
-     * @return the variance of the distribution. 
+     * by some distributions.
+     *
+     * @return the variance of the distribution.
      */
     abstract public double variance();
-    
+
     /**
-     * Computes the skewness of the distribution. Not all distributions have a 
-     * finite skewness for all parameter values. {@link Double#NaN NaN} may be 
+     * Computes the skewness of the distribution. Not all distributions have a
+     * finite skewness for all parameter values. {@link Double#NaN NaN} may be
      * returned if the skewness is not defined for the current values of the distribution.
-     * 
-     * @return the skewness of the distribution. 
+     *
+     * @return the skewness of the distribution.
      */
     abstract public double skewness();
-    
+
     /**
-     * Computes the standard deviation of the distribution. Not all distributions have a 
-     * finite standard deviation for all parameter values. {@link Double#NaN NaN} may be 
-     * returned if the variance is not defined for the current values of the distribution. 
+     * Computes the standard deviation of the distribution. Not all distributions have a
+     * finite standard deviation for all parameter values. {@link Double#NaN NaN} may be
+     * returned if the variance is not defined for the current values of the distribution.
      * {@link Double#POSITIVE_INFINITY Infinity} is a possible value to be returned
-     * by some distributions. 
-     * 
-     * @return the standard deviation of the distribution 
+     * by some distributions.
+     *
+     * @return the standard deviation of the distribution
      */
-    public double standardDeviation()
-    {
+    public double standardDeviation() {
         return Math.sqrt(variance());
     }
 
@@ -140,35 +137,33 @@ public abstract class Distribution implements Cloneable, Serializable
      * return a value.
      */
     abstract public double max();
-    
+
     /**
-     * This method returns a double array containing the values of random samples from this distribution. 
-     * 
+     * This method returns a double array containing the values of random samples from this distribution.
+     *
      * @param numSamples the number of random samples to take
-     * @param rand the source of randomness
+     * @param rand       the source of randomness
      * @return an array of the random sample values
      */
-    public double[] sample(int numSamples, Random rand)
-    {
+    public double[] sample(int numSamples, Random rand) {
         double[] samples = new double[numSamples];
-        for(int i = 0; i < samples.length; i++)
+        for (int i = 0; i < samples.length; i++)
             samples[i] = invCdf(rand.nextDouble());
-        
+
         return samples;
     }
-    
+
     /**
-     * This method returns a double array containing the values of random samples from this distribution. 
-     * 
+     * This method returns a double array containing the values of random samples from this distribution.
+     *
      * @param numSamples the number of random samples to take
-     * @param rand the source of randomness
+     * @param rand       the source of randomness
      * @return a vector of the random sample values
      */
-    public DenseVector sampleVec(int numSamples, Random rand)
-    {
+    public DenseVector sampleVec(int numSamples, Random rand) {
         return DenseVector.toDenseVec(sample(numSamples, rand));
     }
-    
+
     @Override
     abstract public Distribution clone();
 }

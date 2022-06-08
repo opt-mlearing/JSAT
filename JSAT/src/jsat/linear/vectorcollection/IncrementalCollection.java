@@ -28,14 +28,14 @@ import jsat.linear.Vec;
  * collection without needing to re-build the entire collection. Efficiency and
  * performance of incremental additions will depend on the base implementation.
  *
- * @author Edward Raff
  * @param <V> The type of vectors stored in this collection
+ * @author Edward Raff
  */
-public interface IncrementalCollection<V extends Vec> extends VectorCollection<V>
-{
+public interface IncrementalCollection<V extends Vec> extends VectorCollection<V> {
     /**
-     * Incrementally adds the given datapoint into the collection 
-     * @param x the vector to add to the collection 
+     * Incrementally adds the given datapoint into the collection
+     *
+     * @param x the vector to add to the collection
      */
     public void insert(V x);
 

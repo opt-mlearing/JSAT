@@ -2,6 +2,7 @@ package jsat.classifiers.linear.kernelized;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import jsat.FixedProblems;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.ClassificationModelEvaluation;
@@ -14,42 +15,35 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Edward Raff
  */
-public class ALMA2KTest
-{
-    
-    public ALMA2KTest()
-    {
+public class ALMA2KTest {
+
+    public ALMA2KTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
-    
+
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
-    
+
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     @Test
-    public void testTrainC_ClassificationDataSet_ExecutorService()
-    {
+    public void testTrainC_ClassificationDataSet_ExecutorService() {
         System.out.println("trainC");
 
         ALMA2K instance = new ALMA2K(new RBFKernel(0.5), 0.8);
@@ -65,13 +59,12 @@ public class ALMA2KTest
     }
 
     @Test
-    public void testTrainC_ClassificationDataSet()
-    {
+    public void testTrainC_ClassificationDataSet() {
         System.out.println("trainC");
 
-        
+
         ALMA2K instance = new ALMA2K(new RBFKernel(0.5), 0.8);
-        
+
         ClassificationDataSet train = FixedProblems.getInnerOuterCircle(200, RandomUtil.getRandom());
         ClassificationDataSet test = FixedProblems.getInnerOuterCircle(100, RandomUtil.getRandom());
 
@@ -83,12 +76,11 @@ public class ALMA2KTest
     }
 
     @Test
-    public void testClone()
-    {
+    public void testClone() {
         System.out.println("clone");
 
         ALMA2K instance = new ALMA2K(new RBFKernel(0.5), 0.8);
-        
+
         ClassificationDataSet t1 = FixedProblems.getInnerOuterCircle(500, RandomUtil.getRandom());
         ClassificationDataSet t2 = FixedProblems.getInnerOuterCircle(500, RandomUtil.getRandom(), 2.0, 10.0);
 
