@@ -1,5 +1,3 @@
-
-
 package jsat.linear;
 
 import java.util.Iterator;

@@ -1,14 +1,10 @@
-
 package jsat.classifiers.svm;
 
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.FixedProblems;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.distributions.kernels.RBFKernel;
-import jsat.utils.SystemInfo;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

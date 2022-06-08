@@ -5,7 +5,6 @@ import java.util.Random;
 
 import jsat.utils.DoubleList;
 import jsat.utils.random.RandomUtil;
-import jsat.utils.random.XORWOW;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

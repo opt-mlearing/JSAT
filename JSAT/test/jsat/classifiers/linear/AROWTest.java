@@ -1,7 +1,4 @@
-
 package jsat.classifiers.linear;
-
-import java.util.Random;
 
 import jsat.FixedProblems;
 import jsat.classifiers.ClassificationDataSet;

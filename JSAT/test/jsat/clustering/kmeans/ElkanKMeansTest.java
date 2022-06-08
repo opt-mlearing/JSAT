@@ -1,28 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.clustering.kmeans;
 
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.SimpleDataSet;
 import jsat.classifiers.DataPoint;
 import jsat.clustering.KClustererBase;
 import jsat.distributions.Uniform;
-import jsat.linear.ConstantVector;
 import jsat.linear.Vec;
 import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.utils.GridDataGenerator;
 import jsat.utils.IntSet;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.XORWOW;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

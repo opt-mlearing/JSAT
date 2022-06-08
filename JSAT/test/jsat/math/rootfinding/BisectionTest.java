@@ -1,11 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.math.rootfinding;
 
-import jsat.linear.Vec;
-import jsat.math.rootfinding.Bisection;
 import jsat.math.Function1D;
 import org.junit.AfterClass;
 import org.junit.Before;

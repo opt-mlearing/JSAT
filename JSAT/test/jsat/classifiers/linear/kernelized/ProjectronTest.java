@@ -8,7 +8,6 @@ import jsat.classifiers.*;
 import jsat.distributions.kernels.RBFKernel;
 import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
-import jsat.utils.random.XORWOW;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -1,7 +1,6 @@
 package jsat.classifiers.linear;
 
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
 
 import jsat.SimpleWeightVectorModel;
 import jsat.classifiers.*;

@@ -1,24 +1,17 @@
-/*
- * This code was contributed under the Public Domain
- */
 package jsat.clustering;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import jsat.DataSet;
 import jsat.NormalClampedSample;
 import jsat.SimpleDataSet;
 import jsat.TestTools;
 import jsat.classifiers.CategoricalData;
 import jsat.classifiers.DataPoint;
-import jsat.distributions.multivariate.MultivariateDistribution;
 import jsat.distributions.multivariate.NormalM;
-import jsat.linear.ConstantVector;
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;
 import jsat.utils.GridDataGenerator;

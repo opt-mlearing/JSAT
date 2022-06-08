@@ -1,13 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.clustering;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.*;
 
@@ -17,10 +10,7 @@ import jsat.classifiers.DataPoint;
 import jsat.clustering.kmeans.HamerlyKMeans;
 import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.utils.GridDataGenerator;
-import jsat.utils.IntSet;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

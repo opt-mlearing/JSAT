@@ -1,32 +1,17 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.clustering;
 
-import java.util.Set;
-
 import jsat.classifiers.DataPoint;
-
-import java.util.concurrent.Executors;
-
 import jsat.distributions.Uniform;
 import jsat.utils.GridDataGenerator;
-import jsat.utils.IntSet;
-import jsat.utils.SystemInfo;
 import jsat.SimpleDataSet;
 
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
 
 import static jsat.TestTools.checkClusteringByCat;
 
 import jsat.clustering.SeedSelectionMethods.SeedSelection;
 import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.utils.random.RandomUtil;
-import jsat.utils.random.XORWOW;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

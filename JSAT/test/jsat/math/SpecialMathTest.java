@@ -1,4 +1,3 @@
-
 package jsat.math;
 
 import java.util.HashMap;

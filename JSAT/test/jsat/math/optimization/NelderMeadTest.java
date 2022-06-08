@@ -1,9 +1,6 @@
-
 package jsat.math.optimization;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import jsat.linear.DenseVector;
 import jsat.linear.Vec;

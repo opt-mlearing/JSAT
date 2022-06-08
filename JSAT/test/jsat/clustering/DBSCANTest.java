@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.clustering;
 
 import java.util.Set;
@@ -22,7 +18,6 @@ import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.linear.vectorcollection.VectorArray;
 import jsat.utils.IntSet;
 import jsat.utils.SystemInfo;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

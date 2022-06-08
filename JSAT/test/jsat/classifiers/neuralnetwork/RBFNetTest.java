@@ -1,17 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.classifiers.neuralnetwork;
 
 import java.util.EnumSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.FixedProblems;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.regression.RegressionDataSet;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
 import org.junit.After;
 import org.junit.AfterClass;

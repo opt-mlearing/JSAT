@@ -1,4 +1,3 @@
-
 package jsat.regression.evaluation;
 
 import org.junit.After;

@@ -1,20 +1,14 @@
 package jsat.classifiers.linear;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import jsat.FixedProblems;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.DataPointPair;
-import jsat.classifiers.svm.DCD;
-import jsat.classifiers.svm.DCDs;
 import jsat.datatransform.LinearTransform;
 import jsat.lossfunctions.*;
 import jsat.math.OnLineStatistics;
 import jsat.math.optimization.LBFGS;
 import jsat.math.optimization.WolfeNWLineSearch;
 import jsat.regression.RegressionDataSet;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -150,12 +144,10 @@ public class LinearBatchTest {
 
         int origErrors = 0;
         for (int i = 0; i < train.size(); i++)
-            if (notWarm.classify(train.getDataPoint(i)).mostLikely() != train.getDataPointCategory(i))
-                origErrors++;
+            if (notWarm.classify(train.getDataPoint(i)).mostLikely() != train.getDataPointCategory(i)) origErrors++;
         int warmErrors = 0;
         for (int i = 0; i < train.size(); i++)
-            if (warm.classify(train.getDataPoint(i)).mostLikely() != train.getDataPointCategory(i))
-                warmErrors++;
+            if (warm.classify(train.getDataPoint(i)).mostLikely() != train.getDataPointCategory(i)) warmErrors++;
 
         assertTrue("Warm was less acurate? " + warmErrors + " vs " + origErrors, warmErrors <= origErrors * 1.15);
     }

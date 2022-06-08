@@ -1,6 +1,3 @@
-/*
- * This implementation has been contributed under the Public Domain.
- */
 package jsat.linear;
 
 import java.util.Random;

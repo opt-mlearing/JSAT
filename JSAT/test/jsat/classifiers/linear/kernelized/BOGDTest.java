@@ -1,16 +1,10 @@
 package jsat.classifiers.linear.kernelized;
 
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import jsat.FixedProblems;
 import jsat.classifiers.*;
 import jsat.distributions.kernels.RBFKernel;
 import jsat.lossfunctions.HingeLoss;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
-import jsat.utils.random.XORWOW;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

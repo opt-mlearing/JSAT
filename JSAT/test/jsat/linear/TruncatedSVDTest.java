@@ -1,6 +1,3 @@
-/*
- * This implementation contributed under the Public Domain.
- */
 package jsat.linear;
 
 import java.util.Arrays;

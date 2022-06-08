@@ -1,4 +1,3 @@
-
 package jsat.text.stemming;
 
 import org.junit.After;

@@ -1,21 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.classifiers.trees;
 
 import java.util.Arrays;
-
-
 import java.util.Random;
-import java.util.concurrent.Executors;
 
 import jsat.utils.GridDataGenerator;
 import jsat.utils.IntSet;
-import jsat.utils.SystemInfo;
-
-import java.util.concurrent.ExecutorService;
-
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.Classifier;
 import jsat.classifiers.DataPointPair;
@@ -23,7 +12,6 @@ import jsat.datatransform.InsertMissingValuesTransform;
 import jsat.datatransform.NumericalToHistogram;
 import jsat.distributions.Uniform;
 import jsat.regression.RegressionDataSet;
-
 import org.junit.*;
 
 import static org.junit.Assert.*;

@@ -1,4 +1,3 @@
-
 package jsat.classifiers.linear;
 
 import java.util.Random;

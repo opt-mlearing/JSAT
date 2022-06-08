@@ -1,4 +1,3 @@
-
 package jsat.driftdetectors;
 
 import java.util.List;

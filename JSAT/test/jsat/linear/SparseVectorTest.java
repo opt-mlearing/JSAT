@@ -1,6 +1,5 @@
 package jsat.linear;
 
-import jsat.math.Function;
 import jsat.math.IndexFunction;
 import org.junit.After;
 import org.junit.AfterClass;

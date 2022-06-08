@@ -4,17 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.FixedProblems;
-import jsat.classifiers.CategoricalResults;
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.ClassificationModelEvaluation;
 import jsat.classifiers.svm.SupportVectorLearner;
-import jsat.distributions.kernels.PukKernel;
 import jsat.distributions.kernels.RBFKernel;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
 import org.junit.After;
 import org.junit.AfterClass;

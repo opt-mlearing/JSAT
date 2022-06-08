@@ -1,9 +1,4 @@
-
 package jsat.classifiers.boosting;
-
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.FixedProblems;
 import jsat.classifiers.ClassificationDataSet;
@@ -12,13 +7,9 @@ import jsat.classifiers.OneVSAll;
 import jsat.classifiers.linear.LinearBatch;
 import jsat.classifiers.linear.LogisticRegressionDCD;
 import jsat.classifiers.svm.DCDs;
-import jsat.lossfunctions.AbsoluteLoss;
-import jsat.lossfunctions.HuberLoss;
 import jsat.lossfunctions.SoftmaxLoss;
-import jsat.lossfunctions.SquaredLoss;
 import jsat.regression.RegressionDataSet;
 import jsat.regression.Regressor;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
 import org.junit.*;
 

@@ -1,20 +1,15 @@
 package jsat.clustering.hierarchical;
 
-
 import java.util.Set;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.SimpleDataSet;
 import jsat.classifiers.DataPoint;
 import jsat.clustering.dissimilarity.SingleLinkDissimilarity;
 import jsat.distributions.Uniform;
-import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.utils.GridDataGenerator;
 import jsat.utils.IntSet;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

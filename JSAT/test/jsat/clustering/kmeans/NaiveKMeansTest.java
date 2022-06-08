@@ -1,9 +1,6 @@
-
 package jsat.clustering.kmeans;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jsat.SimpleDataSet;
 import jsat.classifiers.DataPoint;
@@ -14,10 +11,8 @@ import jsat.linear.Vec;
 import jsat.linear.distancemetrics.EuclideanDistance;
 import jsat.utils.GridDataGenerator;
 import jsat.utils.IntSet;
-import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
 import jsat.utils.random.XORWOW;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

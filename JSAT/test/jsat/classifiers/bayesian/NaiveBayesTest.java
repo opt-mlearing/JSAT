@@ -1,17 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.classifiers.bayesian;
 
 import java.util.Random;
-import java.util.concurrent.Executors;
-
 import jsat.utils.GridDataGenerator;
-import jsat.utils.SystemInfo;
-
-import java.util.concurrent.ExecutorService;
-
 import jsat.classifiers.ClassificationDataSet;
 import jsat.classifiers.Classifier;
 import jsat.distributions.Normal;

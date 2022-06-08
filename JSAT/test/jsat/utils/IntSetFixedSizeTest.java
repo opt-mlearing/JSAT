@@ -1,4 +1,3 @@
-
 package jsat.utils;
 
 import java.util.*;

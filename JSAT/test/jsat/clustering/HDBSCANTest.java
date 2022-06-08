@@ -3,8 +3,6 @@ package jsat.clustering;
 import java.util.Set;
 
 import jsat.classifiers.DataPoint;
-
-
 import jsat.distributions.Uniform;
 import jsat.utils.GridDataGenerator;
 import jsat.SimpleDataSet;
@@ -13,7 +11,6 @@ import java.util.List;
 
 import jsat.utils.IntSet;
 import jsat.utils.random.RandomUtil;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

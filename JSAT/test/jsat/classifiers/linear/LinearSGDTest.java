@@ -1,10 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jsat.classifiers.linear;
-
-import java.util.Random;
 
 import jsat.FixedProblems;
 import jsat.TestTools;
@@ -16,7 +10,6 @@ import jsat.math.optimization.stochastic.AdaGrad;
 import jsat.math.optimization.stochastic.GradientUpdater;
 import jsat.math.optimization.stochastic.RMSProp;
 import jsat.math.optimization.stochastic.SimpleSGD;
-import jsat.regression.RegressionDataSet;
 import jsat.utils.random.RandomUtil;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -115,10 +108,8 @@ public class LinearSGDTest {
 
                 int tries = 4;
                 do {
-                    if (TestTools.regressEvalLinear(linearsgd, 10000, 200))
-                        break;
-                }
-                while (tries-- > 0);
+                    if (TestTools.regressEvalLinear(linearsgd, 10000, 200)) break;
+                } while (tries-- > 0);
                 assertTrue(tries > 0);
 
             }

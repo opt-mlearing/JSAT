@@ -1,4 +1,3 @@
-
 package jsat.text.tokenizer;
 
 import java.util.Arrays;
