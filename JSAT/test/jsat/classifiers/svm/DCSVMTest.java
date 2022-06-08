@@ -10,8 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.Assert;
 
 /**
  * @author Edward Raff
@@ -49,8 +48,9 @@ public class DCSVMTest {
             classifier.setClusterSampleSize(200);//make smaller to test sub-sampling
             classifier.train(trainSet, true);
 
-            for (int i = 0; i < testSet.size(); i++)
-                assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            for (int i = 0; i < testSet.size(); i++) {
+                Assert.assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            }
         }
 
         trainSet = FixedProblems.getInnerOuterCircle(150, new Random(2));
@@ -64,8 +64,9 @@ public class DCSVMTest {
             classifier.train(trainSet, true);
 
 
-            for (int i = 0; i < testSet.size(); i++)
-                assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            for (int i = 0; i < testSet.size(); i++) {
+                Assert.assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            }
         }
     }
 
@@ -82,8 +83,9 @@ public class DCSVMTest {
             classifier.setClusterSampleSize(200);//make smaller to test sub-sampling
             classifier.train(trainSet);
 
-            for (int i = 0; i < testSet.size(); i++)
-                assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            for (int i = 0; i < testSet.size(); i++) {
+                Assert.assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            }
         }
 
         trainSet = FixedProblems.getInnerOuterCircle(150, new Random(2));
@@ -97,8 +99,9 @@ public class DCSVMTest {
             classifier.train(trainSet);
 
 
-            for (int i = 0; i < testSet.size(); i++)
-                assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            for (int i = 0; i < testSet.size(); i++) {
+                Assert.assertEquals(testSet.getDataPointCategory(i), classifier.classify(testSet.getDataPoint(i)).mostLikely());
+            }
         }
     }
 

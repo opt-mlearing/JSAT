@@ -27,7 +27,6 @@ import jsat.linear.Vec;
 import java.util.Arrays;
 
 import jsat.distributions.kernels.NormalizedKernel;
-import jsat.math.MathTricks;
 import jsat.utils.concurrent.AtomicDouble;
 import jsat.utils.concurrent.ParallelUtils;
 
@@ -160,7 +159,7 @@ public class SVMnoBias extends SupportVectorLearner implements BinaryScoreClassi
             int i_max = -1;
             double best_delta = -1;
             for (int i = 0; i < N; i++) {
-                double a_star_i = MathTricks.max(MathTricks.min(weights.get(i) * C, nabla_W[i] + alphas[i]), 0);
+                double a_star_i = Math.max(Math.min(weights.get(i) * C, nabla_W[i] + alphas[i]), 0);
                 double delta = a_star_i - alphas[i];
                 ///gain←δ· (∇Wi(α)−δ/2)
                 double gain = delta * (nabla_W[i] - delta / 2);
@@ -191,7 +190,7 @@ public class SVMnoBias extends SupportVectorLearner implements BinaryScoreClassi
                 double Ea_delta = 0;
                 for (int j = start; j < end; j++) {
                     nabla_W[j] -= delta * label[i] * label[j] * kEval(i, j);
-                    Ea_delta += weights.get(j) * C * MathTricks.min(MathTricks.max(0, nabla_W[j]), 2);
+                    Ea_delta += weights.get(j) * C * Math.min(Math.max(0, nabla_W[j]), 2);
                 }
                 E_a.addAndGet(Ea_delta);
             });
@@ -249,7 +248,7 @@ public class SVMnoBias extends SupportVectorLearner implements BinaryScoreClassi
                 nabla_W[i] += nabla_Wi_delta;
 
                 Ta_delta -= alphas[i] * nabla_W[i];
-                Ea_delta += weights.get(i) * C * MathTricks.min(MathTricks.max(nabla_W[i], 0), 2);
+                Ea_delta += weights.get(i) * C * Math.min(Math.max(nabla_W[i], 0), 2);
             }
 
             E_a.addAndGet(Ea_delta);

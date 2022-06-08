@@ -19,11 +19,8 @@ import jsat.regression.RegressionDataSet;
 import jsat.regression.Regressor;
 import jsat.utils.SystemInfo;
 import jsat.utils.random.RandomUtil;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+
 import static org.junit.Assert.*;
 
 /**
@@ -152,7 +149,8 @@ public class StackingTest
             assertEquals(0, relErr, 0.1);
         }
     }
-    
+
+    @Ignore
     @Test
     public void testRegressionMT()
     {
